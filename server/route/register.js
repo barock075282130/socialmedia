@@ -4,7 +4,7 @@ const { Connected } = require('../utils/database')
 const User = require('../models/user').User
 
 router.post("/", async(req, res) => {
-    const { email, password } = await req.body;
+    const { username, email, password } = await req.body;
     try {
         await Connected();
 
@@ -12,6 +12,7 @@ router.post("/", async(req, res) => {
         if(!user){
             const hashPass = await bcrypt.hash(password, 10);
             const createUser = new User({
+                username,
                 email,
                 password: hashPass,
             });

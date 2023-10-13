@@ -6,8 +6,10 @@ import Profile from "@components/Profile"
 const page = () => {
   return (
     <div className="grid grid-cols-7">
-      <section className="col-span-5">
+      <section className="border col-span-2">
         <Profile />
+      </section>
+      <section className="col-span-3">
         <main>
           <Feeds />
         </main>

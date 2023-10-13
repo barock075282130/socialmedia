@@ -2,10 +2,14 @@
 
 import { createContext, useEffect, useState } from "react";
 
-export const userData = createContext({ userId: undefined, email: undefined })
+export const userData = createContext({ userId: undefined, email: undefined, username: undefined })
 
 const Context = ({ children }) => {
-    const [ user, setUser ] = useState({ userId: undefined, email: undefined })
+    const [ user, setUser ] = useState({ userId: undefined, email: undefined, username: undefined })
+    const Logout = async() => {
+        localStorage.removeItem('x-access-token')
+        window.location.reload(false)
+    }
     const getUser = async() => {
         try {
             const res = await fetch('http://localhost:4000/userdata',{
@@ -16,7 +20,7 @@ const Context = ({ children }) => {
             })
             if(res.ok){
                 const json = await res.json();
-                setUser({ userId: json.userId, email: json.email })
+                setUser({ userId: json.userId, email: json.email, username: json.username })
             }
         } catch (error) {
             console.log(error)
@@ -26,7 +30,7 @@ const Context = ({ children }) => {
         getUser(); 
     },[])
   return (
-    <userData.Provider value={{ user }}>
+    <userData.Provider value={{ user, Logout }}>
         {children}
     </userData.Provider>
   )

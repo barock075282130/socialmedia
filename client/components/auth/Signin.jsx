@@ -1,10 +1,12 @@
 'use client';
 
+import { userData } from "@components/context/userContext";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 const Signin = () => {
+    const { user } = useContext(userData)
     const router = useRouter()
     const [ email, setEmail ] = useState('');
     const [ pass, setPass ] = useState('');
@@ -23,7 +25,7 @@ const Signin = () => {
                 })
             })
             if(getToken.ok){
-                router.push('/')
+                window.location.reload(false)
                 const token = await getToken.json()
                 localStorage.setItem("x-access-token",token.token)
             }else{
@@ -31,9 +33,14 @@ const Signin = () => {
                 setMsg(res)
             }
         } catch (error) {
-            
+            console.log(error)
         }
     }
+    useEffect(()=>{
+        if(user?.userId){
+            router.push('/')
+        }
+    },[user])
   return (
     <div className="grid place-content-center items-center h-full">
         <div className="shadow-lg p-5 rounded-lg">

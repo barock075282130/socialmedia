@@ -18,7 +18,11 @@ router.post('/',async(req,res)=>{
         if(!comparePass){
             return res.status(409).json('wrong password');
         }
-        const token = jwt.sign({ userId: findUser._id, email },process.env.JWT,{ expiresIn: '365d' })
+        const token = jwt.sign(
+          { userId: findUser._id, username: findUser.username, email: findUser.email },
+          process.env.JWT,
+          { expiresIn: "365d" }
+        );
         return res.status(200).json({ token: token })
     } catch (error) {
         return res.status(500).json('fetch error')

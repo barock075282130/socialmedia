@@ -8,6 +8,7 @@ const Singup = () => {
     const router = useRouter();
     const [ email, setEmail ] = useState('');
     const [ pass, setPass ] = useState('');
+    const [ username, setUsername ] = useState('');
     const [ msg, setMsg ] = useState(null);
     const handleRegis = async(e) => {
         e.preventDefault();
@@ -18,7 +19,8 @@ const Singup = () => {
                     "Content-Type":"application/json"
                 },
                 body: JSON.stringify({
-                    email: email,
+                    username,
+                    email,
                     password: pass
                 })
             })
@@ -36,6 +38,12 @@ const Singup = () => {
         <div className="grid place-content-center items-center h-full">
         <div className="shadow-lg p-5 rounded-lg">
             <form className="grid" onSubmit={handleRegis}>
+                <span className="pl-4 font-semibold">Username</span>
+                <input type="text" 
+                    value={username} 
+                    onChange={(e)=> setUsername(e.target.value)}
+                    required
+                />
                 <span className="pl-4 font-semibold">E-mail</span>
                 <input type="text" 
                     value={email} 
