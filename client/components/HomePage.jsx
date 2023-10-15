@@ -2,7 +2,6 @@ import Feeds from "./Feeds"
 import Post from "./Post"
 import Profile from "./Profile"
 import SearchBar from "./SearchBar"
-import Trends from "./Trends"
 import UserList from "./UserList"
 
 const HomePage = () => {
@@ -19,7 +18,6 @@ const HomePage = () => {
       </section>
       <section className="border col-span-2 min-h-screen p-3 gap-1">
         <SearchBar />
-        <Trends />
         <UserList />
       </section>
     </div>

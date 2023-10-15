@@ -661,17 +661,8 @@ video {
 .h-screen {
   height: 100vh;
 }
-.h-96 {
-  height: 24rem;
-}
-.max-h-full {
-  max-height: 100%;
-}
 .min-h-screen {
   min-height: 100vh;
-}
-.min-h-full {
-  min-height: 100%;
 }
 .w-10 {
   width: 2.5rem;
@@ -730,11 +721,8 @@ video {
 .gap-2 {
   gap: 0.5rem;
 }
-.overflow-y-auto {
-  overflow-y: auto;
-}
-.overflow-y-scroll {
-  overflow-y: scroll;
+.gap-3 {
+  gap: 0.75rem;
 }
 .rounded-full {
   border-radius: 9999px;
@@ -879,6 +867,18 @@ video {
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+.text-green-400 {
+  --tw-text-opacity: 1;
+  color: rgb(74 222 128 / var(--tw-text-opacity));
+}
+.text-red-400 {
+  --tw-text-opacity: 1;
+  color: rgb(248 113 113 / var(--tw-text-opacity));
+}
+.text-blue-400 {
+  --tw-text-opacity: 1;
+  color: rgb(96 165 250 / var(--tw-text-opacity));
 }
 .underline {
   text-decoration-line: underline;

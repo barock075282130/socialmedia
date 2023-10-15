@@ -8,10 +8,33 @@ import { userData } from "./context/userContext";
 const Feeds = () => {
   const [post, setPost] = useState([]);
   const searchParam = useSearchParams();
+  const { user } = useContext(userData)
   const userId = searchParam.get("id");
   const router = useRouter();
   const pathName = usePathname()
   const gotoProfile = (id) => router.push(`/profile?id=${id}`);
+  const handleDel = async(id) => {
+    if(confirm('delete this post!')){
+      try {
+        const res = await fetch(`http://localhost:4000/post/del`,{
+          method: "DELETE",
+          headers: {
+            "Content-Type":"application/json",
+            "x-access-token": "Bearer " + localStorage.getItem("x-access-token")
+          },
+          body: JSON.stringify({
+            user: user?.userId,
+            postId: id
+          })
+        })
+        if(res.ok){
+          window.location.reload(false)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
   useEffect(() => {
     const fetchPost = async () => {
       if(pathName === `/profile`){
@@ -70,6 +93,14 @@ const Feeds = () => {
                     height={100}
                   />
                 ) : null}
+                {pathName === '/profile'&&
+                  userId === user?.userId&&(
+                    <div className="flex justify-center gap-3">
+                      <button className="text-blue-400">edit</button>
+                      <button className="text-red-400" onClick={()=>handleDel(data._id)}>del</button>
+                    </div>
+                  )
+                }
               </div>
             </div>
           ))
