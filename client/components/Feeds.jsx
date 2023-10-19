@@ -9,10 +9,10 @@ const Feeds = () => {
   const [post, setPost] = useState([]);
   const searchParam = useSearchParams();
   const { user } = useContext(userData)
-  const userId = searchParam.get("id");
+  const username = searchParam.get("name");
   const router = useRouter();
   const pathName = usePathname()
-  const gotoProfile = (id) => router.push(`/profile?id=${id}`);
+  const gotoProfile = (id) => router.push(`/profile?name=${id}`);
   const handleDel = async(id) => {
     if(confirm('delete this post!')){
       try {
@@ -39,7 +39,7 @@ const Feeds = () => {
     const fetchPost = async () => {
       if(pathName === `/profile`){
         try {
-          const res = await fetch(`http://localhost:4000/post/${userId}`, {
+          const res = await fetch(`http://localhost:4000/post/${username}`, {
             method: "GET",
           });
           const json = await res.json();
@@ -61,7 +61,7 @@ const Feeds = () => {
       }
     };
     fetchPost();
-  }, [userId]);
+  }, [username]);
   return (
     <>
       {post
@@ -72,14 +72,14 @@ const Feeds = () => {
             >
               <div
                 className="col-span-1 flex justify-center"
-                onClick={() => gotoProfile(data.userpostid)}
+                onClick={() => gotoProfile(data.username)}
               >
                 <div className="w-10 h-10 bg-white rounded-full border cursor-pointer" />
               </div>
               <div className="col-span-10">
                 <div
                   className="flex gap-1 cursor-pointer"
-                  onClick={() => gotoProfile(data.userpostid)}
+                  onClick={() => gotoProfile(data.username)}
                 >
                   <p className="font-semibold">{data.username}</p>
                   <p className="font-normal text-gray-400">{data.address}</p>
@@ -94,7 +94,7 @@ const Feeds = () => {
                   />
                 ) : null}
                 {pathName === '/profile'&&
-                  userId === user?.userId&&(
+                  username === user?.username&&(
                     <div className="flex justify-center gap-3">
                       <button className="text-blue-400">edit</button>
                       <button className="text-red-400" onClick={()=>handleDel(data._id)}>del</button>

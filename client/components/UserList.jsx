@@ -8,12 +8,12 @@ const UserList = () => {
   const [userList, setUserList] = useState([]);
   const router = useRouter();
   const { user } = useContext(userData);
-  const gotoUser = (id) => router.push(`/profile?id=${id}`);
+  const gotoUser = (username) => router.push(`/profile?name=${username}`);
   useEffect(() => {
     if (user.userId) {
       const fetchUser = async () => {
         try {
-          const getUser = await fetch(`http://localhost:4000/acc/${user.userId}`,{
+          const getUser = await fetch(`http://localhost:4000/acc/${user.username}`,{
               method: "GET",
             }
           );
@@ -48,7 +48,7 @@ const UserList = () => {
               <div
                 className="flex justify-between p-2 border my-1 rounded-lg hover:bg-gray-100 cursor-pointer duration-300"
                 key={i}
-                onClick={() => gotoUser(data._id)}
+                onClick={() => gotoUser(data.username)}
               >
                 <div className="flex items-center">
                   <div className="w-16 h-16 bg-white border rounded-full"></div>

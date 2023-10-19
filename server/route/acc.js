@@ -16,12 +16,12 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/:id", async (req, res) => {
-  const { id } = req.params;
+router.get("/:username", async (req, res) => {
+  const { username } = req.params;
   try {
     await Connected();
 
-    const getdata = await User.find({ _id: { $ne: id } })
+    const getdata = await User.find({ username: { $ne: username } });
     if (!getdata) {
       return res.status(404).json("Cant find user");
     }

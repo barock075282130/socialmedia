@@ -9,6 +9,9 @@ router.post("/", async(req, res) => {
         await Connected();
 
         const user = await User.findOne({ email })
+        if(user.username === username){
+            return res.status(409).json("username is used")
+        }
         if(!user){
             const hashPass = await bcrypt.hash(password, 10);
             const createUser = new User({

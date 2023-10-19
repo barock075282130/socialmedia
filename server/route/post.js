@@ -53,10 +53,10 @@ router.get("/getpost", async (req, res) => {
   }
 });
 
-router.get("/:id", async (req, res) => {
-  const { id } = req.params;
+router.get("/:username", async (req, res) => {
+  const { username } = req.params;
   try {
-    const getUserPost = await Post.find({ userpostid: id });
+    const getUserPost = await Post.find({ username: username });
     if (!getUserPost) {
       return res.status(404).json("No Post Yet");
     }

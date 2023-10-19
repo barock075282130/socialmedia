@@ -1,13 +1,17 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
-import { useContext } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useContext, useState } from "react";
 import { userData } from "./context/userContext";
+import EditProfile from "./EditProfile";
 
 const Profile = () => {
   const router = useRouter();
   const pathName = usePathname();
-  const profile = (id) => router.push(`/profile?id=${id}`);
+  const [ open, setOpen ] = useState(false)
+  const profile = (username) => router.push(`/profile?name=${username}`);
+  const params = useSearchParams()
+  const name = params.get('name')
   const { user, Logout } = useContext(userData);
   const address = user?.email?.split("@")[1];
   const signIn = () => router.push("/auth/signin");
@@ -27,21 +31,20 @@ const Profile = () => {
               )}
               <div className="w-full h-32 top-0 bg-red-400"></div>
               <div className="w-40 h-40 bg-white rounded-full absolute top-10 left-5 border"></div>
-              <div className="flex justify-end p-3 relative">
-                {pathName === "/profile" && (
-                  <span className="blue_btn cursor-pointer absolute">
-                    Edit Profile
-                  </span>
+                {name === user?.username && (
+                  <EditProfile 
+                    setOpen={setOpen}
+                    open={open}
+                  />
                 )}
-              </div>
-              <div className="mt-14 px-10">
+              <div className="mt-20 px-10">
                 <div className="relative flex gap-2">
                   {pathName !== "/profile" ? (
                     <h1
                       className="font-bold text-xl cursor-pointer"
-                      onClick={() => profile(user.userId)}
+                      onClick={() => profile(user.username)}
                     >
-                      {user.username}
+                      {user.username || ''}
                     </h1>
                   ) : (
                     <h1 className="font-bold text-xl">{user.username}</h1>
@@ -50,7 +53,7 @@ const Profile = () => {
                 <p>@{address}</p>
               </div>
             </div>
-            {pathName !== "/profile" && (
+            {user?.username && (
               <div className="flex justify-center my-6">
                 <button
                   onClick={Logout}
