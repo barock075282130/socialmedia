@@ -4,9 +4,24 @@ import { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { userData } from "./context/userContext";
+import UserProfile from "./UserProfile";
+import Post from "./Post";
+
+const OtherUser = ({ currentUser, params,path }) => {
+  if(currentUser !== params && path === '/profile'){
+    return <UserProfile 
+              name={params}
+            />
+  }
+}
+
+const deletePost = (posts, postId) => {
+  return posts.filter((post)=> post._id !== postId)
+}
 
 const Feeds = () => {
   const [post, setPost] = useState([]);
+  const [ updatePost, setUpdatePost ] = useState('')
   const searchParam = useSearchParams();
   const { user } = useContext(userData)
   const username = searchParam.get("name");
@@ -28,10 +43,11 @@ const Feeds = () => {
           })
         })
         if(res.ok){
-          window.location.reload(false)
+          const postData = deletePost(post ,id)
+          setPost(postData)
         }
       } catch (error) {
-        console.log(error)
+        throw error
       }
     }
   }
@@ -56,7 +72,7 @@ const Feeds = () => {
           const json = await res.json();
           setPost(json);
         } catch (error) {
-          console.log(error);
+          throw error
         }
       }
     };
@@ -64,6 +80,19 @@ const Feeds = () => {
   }, [username]);
   return (
     <>
+      <OtherUser 
+        currentUser={user?.username}
+        params={username}
+        path={pathName}
+      />
+      {pathName === '/'&&(
+        <Post
+          post={post}
+          setPost={setPost}
+          updatePost={updatePost}
+          setUpdatePost={setUpdatePost}
+        />
+      )}
       {post
         ? post.map((data, i) => (
             <div

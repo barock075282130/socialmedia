@@ -11,7 +11,6 @@ const HomePage = () => {
         <Profile />
       </section>
       <section className="col-span-3">
-        <Post />
         <main>
           <Feeds />
         </main>

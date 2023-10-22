@@ -1,15 +1,18 @@
 'use client';
 
-import { useContext, useRef, useState } from "react";
+import { useContext, useState } from "react";
 import { userData } from "./context/userContext";
 
-const Post = () => {
+const Post = ({ 
+  post,
+  setPost,
+  updatePost,
+  setUpdatePost,
+ }) => {
   const { user } = useContext(userData)
   const [ loading, setLoading ] = useState(false);
-  const postRef = useRef();
   const handlePost = async() => {
     setLoading(true)
-    const post = postRef.current.value
     try {
       const res = await fetch('http://localhost:4000/post',{
         method: "POST",
@@ -18,11 +21,19 @@ const Post = () => {
         },
         body: JSON.stringify({
           userId: user?.userId,
-          post: post
+          post: updatePost
         })
       })
       if(res.ok){
-        window.location.reload(false)
+        setUpdatePost("")
+        const data = await res.json();
+        setPost([ ...post, {
+          img: data.img || "",
+          address: data.address,
+          posttext: data.posttext,
+          username: data.username,
+          userpostid: data.userpostid,
+        }])
       }
     } catch (error) {
       console.log(error)
@@ -39,7 +50,8 @@ const Post = () => {
               cols="30" 
               rows="5" 
               className="resize-none w-full p-3 border rounded-md"
-              ref={postRef}
+              value={updatePost}
+              onChange={(e)=>setUpdatePost(e.target.value)}
             >
             </textarea>
             <div className="flex justify-between items-center">

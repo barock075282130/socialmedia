@@ -22,7 +22,7 @@ router.post("/", async (req, res) => {
       postimg: img || "",
     });
     await createPost.save();
-    return res.status(200).json("Post created");
+    return res.status(200).json(createPost);
   } catch (error) {
     return res.status(500).json("Fetch error");
   }

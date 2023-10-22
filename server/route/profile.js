@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const User = require("../models/user").User;
+const ToBase64 = require("../middleware/base64file");
 const { Post } = require("../models/post");
 const { Connected } = require("../utils/database");
 const jwt = require('jsonwebtoken')
@@ -49,7 +50,9 @@ router.patch("/edit/:id", async (req, res) => {
     findUser.username = username;
     await findUser.save();
     return res.status(200).json({ token: token, msg: "Update username success", username: username });
-  } catch (error) {}
+  } catch (error) {
+    return res.status(500).json('something went wrong')
+  }
 });
 
 module.exports = router;

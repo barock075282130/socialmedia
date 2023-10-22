@@ -13,6 +13,14 @@ const userSchema = new Schema({
     type: String,
     require: [true, "password is required"],
   },
+  img: {
+    bgimg: {
+      type: String,
+    },
+    profileimg: {
+      type: String,
+    }
+  }
 });
 
 const User = model('User', userSchema) || models.User
