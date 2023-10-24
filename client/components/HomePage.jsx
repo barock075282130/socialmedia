@@ -1,8 +1,6 @@
 import Feeds from "./Feeds"
-import Post from "./Post"
 import Profile from "./Profile"
 import SearchBar from "./SearchBar"
-import UserList from "./UserList"
 
 const HomePage = () => {
   return (
@@ -15,9 +13,8 @@ const HomePage = () => {
           <Feeds />
         </main>
       </section>
-      <section className="border col-span-2 min-h-screen p-3 gap-1">
+      <section className="border col-span-2 min-h-screen p-3">
         <SearchBar />
-        <UserList />
       </section>
     </div>
   )

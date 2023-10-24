@@ -6,12 +6,11 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { userData } from "./context/userContext";
 import UserProfile from "./UserProfile";
 import Post from "./Post";
+import TimeCal from "@middleware/time";
 
 const OtherUser = ({ currentUser, params,path }) => {
   if(currentUser !== params && path === '/profile'){
-    return <UserProfile 
-              name={params}
-            />
+    return <UserProfile name={params} />
   }
 }
 
@@ -20,6 +19,7 @@ const deletePost = (posts, postId) => {
 }
 
 const Feeds = () => {
+  const serverUrl = 'http://localhost:4000'
   const [post, setPost] = useState([]);
   const [ updatePost, setUpdatePost ] = useState('')
   const searchParam = useSearchParams();
@@ -31,7 +31,7 @@ const Feeds = () => {
   const handleDel = async(id) => {
     if(confirm('delete this post!')){
       try {
-        const res = await fetch(`http://localhost:4000/post/del`,{
+        const res = await fetch(`${serverUrl}/post/del`,{
           method: "DELETE",
           headers: {
             "Content-Type":"application/json",
@@ -52,32 +52,23 @@ const Feeds = () => {
     }
   }
   useEffect(() => {
-    const fetchPost = async () => {
-      if(pathName === `/profile`){
-        try {
-          const res = await fetch(`http://localhost:4000/post/${username}`, {
-            method: "GET",
-          });
-          const json = await res.json();
-          setPost(json);
-        } catch (error) {
-          console.log(error);
-        }
-      }
-      if(pathName === '/'){
-        try {
-          const res = await fetch("http://localhost:4000/post/getpost", {
-            method: "GET",
-          });
-          const json = await res.json();
-          setPost(json);
-        } catch (error) {
-          throw error
-        }
+    const fetchPosts = async () => {
+      const path = pathName === '/' ? '/post/getpost' : `/post/${username}`;
+
+      try {
+        const res = await fetch(`${serverUrl}${path}`, {
+          method: 'GET',
+        });
+        const json = await res.json();
+        setPost(json);
+      } catch (error) {
+        throw error;
       }
     };
-    fetchPost();
+
+    fetchPosts();
   }, [username]);
+  const sortPost = [...post].reverse(post.time)
   return (
     <>
       <OtherUser 
@@ -91,10 +82,11 @@ const Feeds = () => {
           setPost={setPost}
           updatePost={updatePost}
           setUpdatePost={setUpdatePost}
+          type='Post'
         />
       )}
-      {post
-        ? post.map((data, i) => (
+      {sortPost
+        ? sortPost.map((data, i) => (
             <div
               className="m-1 border grid grid-cols-11 py-2 rounded-md"
               key={i}
@@ -105,7 +97,7 @@ const Feeds = () => {
               >
                 <div className="w-10 h-10 bg-white rounded-full border cursor-pointer" />
               </div>
-              <div className="col-span-10">
+              <div className="col-span-10 px-2">
                 <div
                   className="flex gap-1 cursor-pointer"
                   onClick={() => gotoProfile(data.username)}

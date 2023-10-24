@@ -1,50 +1,9 @@
-"use client";
-
-import { useRouter } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
-import { userData } from "./context/userContext";
-
-const UserList = () => {
-  const [userList, setUserList] = useState([]);
-  const router = useRouter();
-  const { user } = useContext(userData);
-  const gotoUser = (username) => router.push(`/profile?name=${username}`);
-  useEffect(() => {
-    if (user.userId) {
-      const fetchUser = async () => {
-        try {
-          const getUser = await fetch(`http://localhost:4000/acc/${user.username}`,{
-              method: "GET",
-            }
-          );
-          const json = await getUser.json();
-          setUserList(json);
-        } catch (error) {
-          console.log(error);
-        }
-      };
-      fetchUser();
-    }else{
-      const fetchAll = async () => {
-        try {
-          const getUser = await fetch(`http://localhost:4000/acc`,{
-              method: "GET",
-            }
-          );
-          const json = await getUser.json();
-          setUserList(json);
-        } catch (error) {
-          console.log(error);
-        }
-      };
-      fetchAll();
-    }
-  }, [user]);
+const UserList = ({ searchResult, user, gotoUser }) => {
   return (
     <>
-      <div className="mt-2">
-        {userList
-          ? userList.map((data, i) => (
+      <div>
+        {searchResult
+          && searchResult.map((data, i) => (
               <div
                 className="flex justify-between p-2 border my-1 rounded-lg hover:bg-gray-100 cursor-pointer duration-300"
                 key={i}
@@ -57,7 +16,7 @@ const UserList = () => {
                     <span className="text-sm text-gray-400">{data.email}</span>
                   </div>
                 </div>
-                {user?.userId&&(
+                {user?.userId && (
                   <div className="flex items-center justify-center cursor-pointer">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -71,7 +30,7 @@ const UserList = () => {
                 )}
               </div>
             ))
-          : null}
+          }
       </div>
     </>
   );

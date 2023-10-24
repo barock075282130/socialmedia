@@ -1,12 +1,11 @@
 "use client";
 
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { userData } from "./context/userContext";
 import { useRouter } from "next/navigation";
 
 const EditProfile = ({ open, setOpen }) => {
   const { user } = useContext(userData);
-  const photoRef = useRef();
   const router = useRouter();
   const [userDetail, setUserDetail] = useState(null);
   const [ msg, setMsg ] = useState(null)
@@ -86,7 +85,6 @@ const EditProfile = ({ open, setOpen }) => {
                   value={userDetail || ""}
                   onChange={(e) => setUserDetail(e.target.value)}
                 />
-                <input type="file" name="photo" ref={photoRef} />
               </div>
               <div className="flex justify-between">
                 <button className="blue_btn">Edit</button>

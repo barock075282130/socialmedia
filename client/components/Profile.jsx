@@ -30,7 +30,9 @@ const Profile = () => {
                 </button>
               )}
               <div className="w-full h-32 top-0 bg-red-400"></div>
-              <div className="w-40 h-40 bg-white rounded-full absolute top-10 left-5 border">
+              <div 
+                className="w-40 h-40 bg-white rounded-full absolute top-10 left-5 border"
+              >
               </div>
                 {name === user?.username && (
                   <EditProfile 

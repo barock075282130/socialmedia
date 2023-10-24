@@ -24,7 +24,7 @@ const Context = ({ children }) => {
                     setUser({ userId: json.userId, email: json.email, username: json.username })
                 }
             } catch (error) {
-                console.log(error)
+                throw error
             }
         }
         getUser(); 

@@ -3,6 +3,7 @@ const Post = require("../models/post").Post;
 const { User } = require("../models/user");
 const { Connected } = require("../utils/database");
 const authUser = require("../middleware/auth");
+const DateTime = require("../middleware/date");
 
 router.post("/", async (req, res) => {
   const { userId, post, img } = await req.body;
@@ -13,6 +14,8 @@ router.post("/", async (req, res) => {
     const name = user.username;
     const email = user.email;
     const address = email.split("@")[1];
+    const time = new DateTime().createTime();
+    const day = new DateTime().createDay();
 
     const createPost = new Post({
       userpostid: userId,
@@ -20,6 +23,8 @@ router.post("/", async (req, res) => {
       username: name,
       posttext: post,
       postimg: img || "",
+      day: day,
+      time: time,
     });
     await createPost.save();
     return res.status(200).json(createPost);
@@ -44,6 +49,8 @@ router.get("/getpost", async (req, res) => {
         address: items.address,
         posttext: items.posttext,
         img: items.postimg || "",
+        day: items.day,
+        time: items.time,
       };
       post.push(postdata);
     });

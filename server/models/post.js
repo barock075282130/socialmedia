@@ -16,6 +16,12 @@ const postSchema = new Schema({
     },
     postImg: {
         type: String
+    },
+    day: {
+        type: String
+    },
+    time: {
+        type: String
     }
 })
 
