@@ -31,7 +31,7 @@ const Singup = () => {
                 setMsg(res)
             }
         } catch (error) {
-            console.log('err')
+            throw error
         }
     }
     return (

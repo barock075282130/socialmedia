@@ -11,6 +11,7 @@ router.post("/", async (req, res) => {
     await Connected();
 
     const user = await User.findById(userId);
+    const profile = user.profileimg
     const name = user.username;
     const email = user.email;
     const address = email.split("@")[1];
@@ -25,6 +26,7 @@ router.post("/", async (req, res) => {
       postimg: img || "",
       day: day,
       time: time,
+      profile: profile || "",
     });
     await createPost.save();
     return res.status(200).json(createPost);
@@ -51,6 +53,7 @@ router.get("/getpost", async (req, res) => {
         img: items.postimg || "",
         day: items.day,
         time: items.time,
+        profile: items.profile,
       };
       post.push(postdata);
     });

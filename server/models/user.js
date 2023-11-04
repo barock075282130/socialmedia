@@ -3,7 +3,7 @@ const { Schema, model, models } = require('mongoose');
 const userSchema = new Schema({
   username: {
     type: String,
-    require: [ true, "username is required" ]
+    require: [true, "username is required"],
   },
   email: {
     type: String,
@@ -13,14 +13,14 @@ const userSchema = new Schema({
     type: String,
     require: [true, "password is required"],
   },
-  img: {
-    bgimg: {
-      type: String,
-    },
-    profileimg: {
-      type: String,
-    }
-  }
+  bgimg: {
+    type: String,
+    default: null
+  },
+  profileimg: {
+    type: String,
+    default: null
+  },
 });
 
 const User = model('User', userSchema) || models.User

@@ -33,7 +33,7 @@ const Signin = () => {
                 setMsg(res)
             }
         } catch (error) {
-            console.log(error)
+            throw error
         }
     }
     useEffect(()=>{

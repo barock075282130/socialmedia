@@ -1,4 +1,7 @@
+import Image from "next/image";
+
 const UserList = ({ searchResult, user, gotoUser }) => {
+  console.log(searchResult)
   return (
     <>
       <div>
@@ -10,7 +13,24 @@ const UserList = ({ searchResult, user, gotoUser }) => {
                 onClick={() => gotoUser(data.username)}
               >
                 <div className="flex items-center">
-                  <div className="w-16 h-16 bg-white border rounded-full"></div>
+                {data?.profileimg ? (
+                  <Image
+                      src={data?.profileimg}
+                      alt={`profile_${data?.username}`}
+                      width={0}
+                      height={0}
+                      sizes="50%"
+                      style={{
+                        cursor: "pointer",
+                        width: "4rem",
+                        height: "4rem",
+                        objectFit: "cover",
+                        borderRadius: "100%",
+                      }}
+                    />
+                  ):(
+                    <div className="w-16 h-16 bg-white border rounded-full"></div>
+                  )}
                   <div className="flex flex-col px-3">
                     <span className="font-semibold">{data.username}</span>
                     <span className="text-sm text-gray-400">{data.email}</span>

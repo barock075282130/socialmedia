@@ -4,15 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { userData } from "./context/userContext";
-import UserProfile from "./UserProfile";
 import Post from "./Post";
-import TimeCal from "@middleware/time";
-
-const OtherUser = ({ currentUser, params,path }) => {
-  if(currentUser !== params && path === '/profile'){
-    return <UserProfile name={params} />
-  }
-}
 
 const deletePost = (posts, postId) => {
   return posts.filter((post)=> post._id !== postId)
@@ -71,11 +63,6 @@ const Feeds = () => {
   const sortPost = [...post].reverse(post.time)
   return (
     <>
-      <OtherUser 
-        currentUser={user?.username}
-        params={username}
-        path={pathName}
-      />
       {pathName === '/'&&(
         <Post
           post={post}
@@ -95,7 +82,24 @@ const Feeds = () => {
                 className="col-span-1 flex justify-center"
                 onClick={() => gotoProfile(data.username)}
               >
-                <div className="w-10 h-10 bg-white rounded-full border cursor-pointer" />
+                {data?.profile ? (
+                  <Image
+                    src={data?.profile}
+                    alt={`profile_${data?.username}`}
+                    width={0}
+                    height={0}
+                    sizes="50%"
+                    style={{
+                      cursor: "pointer",
+                      width: "2.5rem",
+                      height: "2.5rem",
+                      objectFit: "cover",
+                      borderRadius: "100%",
+                    }}
+                  />
+                ):(
+                  <div className="w-10 h-10 bg-white rounded-full border cursor-pointer" />
+                )}
               </div>
               <div className="col-span-10 px-2">
                 <div

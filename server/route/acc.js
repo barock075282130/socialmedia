@@ -39,7 +39,13 @@ router.get('/user/:username' ,async(req,res)=>{
     if(!findUser){
       return res.status(404).json('User not found')
     }
-    return res.status(200).json({ data: findUser })
+    const data = {
+      bgimg: findUser.bgimg,
+      profileimg: findUser.profileimg,
+      username: findUser.username,
+      email: findUser.email,
+    }
+    return res.status(200).json({ data });
   } catch (error) {
     return res.status(500).json('Something went wrong')
   }

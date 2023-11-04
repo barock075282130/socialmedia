@@ -15,13 +15,16 @@ const postSchema = new Schema({
         type: String
     },
     postImg: {
-        type: String
+        type: String,
     },
     day: {
         type: String
     },
     time: {
         type: String
+    },
+    profile: {
+        type: String,
     }
 })
 

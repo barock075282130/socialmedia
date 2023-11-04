@@ -35,7 +35,7 @@ const Post = ({ post, setPost, updatePost, setUpdatePost, type }) => {
           setPost([ ...post, data ]);
         }
       } catch (error) {
-        console.log(error);
+        throw error
       } finally {
         setLoading(false);
       }

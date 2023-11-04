@@ -36,7 +36,7 @@ const EditProfile = ({ open, setOpen }) => {
         setTimeout(()=> window.location.reload(false),300)
       }
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   };
   useEffect(() => {
@@ -56,7 +56,7 @@ const EditProfile = ({ open, setOpen }) => {
             setUserDetail(json);
           }
         } catch (error) {
-          console.log(error);
+          throw error;
         }
       };
       fetchUserData();
@@ -75,7 +75,7 @@ const EditProfile = ({ open, setOpen }) => {
       {open && (
         <>
         <div className="w-full h-full absolute top-0 bg-black/25"></div>
-        <div className="fixed left-4 z-50 bg-white px-10 py-4 rounded-lg top-1/3">
+        <div className="fixed left-4 z-50  px-10 py-4 rounded-lg top-1/3">
           <form onSubmit={changeUser}>
             <div>
               <div className="grid">

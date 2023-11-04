@@ -14,9 +14,9 @@ const FindUser = ({ data, searchResult, user, gotoUser }) => {
     <div className="absolute bg-white w-full">
       <UserList
         name={data}
-        user={user}
         gotoUser={gotoUser}
         searchResult={searchResult}
+        user={user}
       />
     </div>
   );
@@ -41,7 +41,7 @@ const SearchBar = () => {
         const json = await getUser.json();
         setUserList(json);
       } catch (error) {
-        console.log(error);
+        throw error
       }
     };
     fetchUser();
@@ -65,7 +65,7 @@ const SearchBar = () => {
     );
   };
   return (
-    <div className="relative grid">
+    <div>
       <input
           type="text"
           placeholder="search by username or email ..."
@@ -77,9 +77,9 @@ const SearchBar = () => {
         <FindUser
           data={search}
           setSearch={setSearch}
-          user={user}
           gotoUser={gotoUser}
           searchResult={searchResult}
+          user={user}
         />
       </div>
     </div>

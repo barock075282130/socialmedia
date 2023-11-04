@@ -1,19 +1,19 @@
 import Feeds from "./Feeds"
-import Profile from "./Profile"
 import SearchBar from "./SearchBar"
+import Sidebar from "./Sidebar"
 
 const HomePage = () => {
   return (
-    <div className="grid grid-cols-7">
+    <div className="grid grid-cols-10">
       <section className="border col-span-2">
-        <Profile />
+        <Sidebar />
       </section>
-      <section className="col-span-3">
+      <section className="col-span-5">
         <main>
           <Feeds />
         </main>
       </section>
-      <section className="border col-span-2 min-h-screen p-3">
+      <section className="border col-span-3 min-h-screen p-3">
         <SearchBar />
       </section>
     </div>
