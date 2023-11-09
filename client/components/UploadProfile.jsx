@@ -3,7 +3,7 @@
 import { useContext, useState } from "react";
 import { userData } from "./context/userContext";
 
-const UploadProfileImage = ({ photo, handleImage }) => {
+const UploadProfile = ({ photo, handleImage }) => {
   const serverUrl = "http://localhost:4000";
   const { user } = useContext(userData);
   const [open, setOpen] = useState(false);
@@ -12,7 +12,7 @@ const UploadProfileImage = ({ photo, handleImage }) => {
     const formdata = new FormData();
     formdata.append("profile", photo);
     try {
-      const img = await fetch(`${serverUrl}/profile/upload/${user?.userId}`, {
+      const img = await fetch(`${serverUrl}/profile/upload_profile/${user?.userId}`, {
         method: "POST",
         headers: {
           "x-access-token": "Bearer " + localStorage.getItem("x-access-token"),
@@ -62,4 +62,4 @@ const UploadProfileImage = ({ photo, handleImage }) => {
   );
 };
 
-export default UploadProfileImage;
+export default UploadProfile;

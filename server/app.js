@@ -7,6 +7,10 @@ require('dotenv').config()
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(cors());
 app.use(express.json())
+app.use(express.urlencoded({
+    extended: true,
+    limit: '10mb',
+}))
 
 const register = require('./route/register');
 const signin = require('./route/signin');

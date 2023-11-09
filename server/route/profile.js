@@ -12,7 +12,6 @@ cloudinary.config({
   api_secret: "Pn1SkPpoRT9zT-pVhHXUOtzunIQ",
 });
 
-const sharp = require("sharp");
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "./public/uploads/");
@@ -23,7 +22,7 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage: storage });
-
+const imgUpload = upload.fields([{ name: "profile", maxCount: 1 }, { name: "background", maxCount: 1 }])
 
 router.get("/", async (req, res) => {
   const { username } = await req.user;
@@ -65,7 +64,7 @@ router.patch("/edit/:id", async (req, res) => {
       process.env.JWT,
       { expiresIn: "365d" }
     );
-    if(post.length > 0){
+    if (post.length > 0) {
       for (let i = 0; i < post.length; i++) {
         post[i].username = username;
         await post[i].save();
@@ -73,19 +72,17 @@ router.patch("/edit/:id", async (req, res) => {
     }
     findUser.username = username;
     await findUser.save();
-    return res
-      .status(200)
-      .json({
-        token: token,
-        msg: "Update username success",
-        username: username,
-      });
+    return res.status(200).json({
+      token: token,
+      msg: "Update username success",
+      username: username,
+    });
   } catch (error) {
     return res.status(500).json("something went wrong");
   }
 });
 
-router.post("/upload/:id", upload.single("profile"), async (req, res) => {
+router.patch("/upload_profile/:id", upload.single("profile"), async (req, res) => {
   const { id } = req.params;
   const file = req.file
   const auth = req.user
@@ -99,9 +96,9 @@ router.post("/upload/:id", upload.single("profile"), async (req, res) => {
       return res.status(404).json('User not found')
     }
     const uploadimg = await cloudinary.uploader.upload(file.path);
-    const post = await Post.find({ userId: id })
+    const post = await Post.find({ userpostid: id })
     for(let i = 0; i < post.length; i++){
-      post[i].profileimg = uploadimg.url
+      post[i].profile = uploadimg.url;
       await post[i].save()
     }
     saveProfile.profileimg = uploadimg.url;

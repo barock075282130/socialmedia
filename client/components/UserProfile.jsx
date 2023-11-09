@@ -30,8 +30,8 @@ const OpenImg = ({ img, open, setOpen }) => {
               height={0}
               sizes="100vh"
               style={{
-                width: "100%",
-                height: "100%",
+                width: "auto",
+                height: "100vh",
               }}
             />
           </div>
@@ -127,10 +127,10 @@ const UserProfile = ({ name }) => {
           </div>
           <div className="h-20 pl-28">
             <span className="flex pt-2 font-semibold text-xl">
-              {userInfo.data.username}
+              {userInfo?.data?.username}
             </span>
             <span className="text-gray-400">
-              @{userInfo.data.email.split("@")[1]}
+              @{userInfo?.data?.email.split("@")[1]}
             </span>
           </div>
         </div>
