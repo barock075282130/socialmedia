@@ -9,6 +9,8 @@ const UploadProfileImage = ({
   setPreviewImg,
   user,
   router,
+  upload,
+  setUpload
 }) => {
   const handleCloseUpload = () => {
     setOpenUpload(false);
@@ -26,6 +28,7 @@ const UploadProfileImage = ({
   };
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
+    setUpload(true)
     const form = new FormData();
     form.append("profile", profile);
     try {
@@ -41,21 +44,22 @@ const UploadProfileImage = ({
         }
       );
       if (res.ok) {
-        const token = await res.json();
+        const json = await res.json();
+        const token = json.token
         localStorage.removeItem("x-access-token");
         localStorage.setItem("x-access-token", token);
         router.push(`/profile?name=${user?.username}`);
-        if (token) {
-          setTimeout(() => {
-            window.location.reload(false);
-          }, 500);
-        }
+        setTimeout(() => window.location.reload(false), 300);
       }
-    } catch (error) {}
+    } catch (error) {
+      throw error
+    } finally {
+      setUpload(false)
+    }
   };
   return (
     <>
-      {!openUpload && <p onClick={handleUpload}>Update profile photo</p>}
+      {!openUpload && <p onClick={handleUpload} className="cursor-pointer hover:text-gray-600">Update profile photo</p>}
       {openUpload && (
         <>
           <div className="fixed top-0 left-0 z-10 w-screen h-screen bg-black/50 backdrop-blur-md" />
@@ -73,7 +77,7 @@ const UploadProfileImage = ({
                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
               </svg>
             </button>
-            <div className="grid place-content-center h-full">
+            <div className="flex items-center justify-center h-full">
               {previewImg && (
                 <div>
                   <Image
@@ -86,11 +90,13 @@ const UploadProfileImage = ({
               )}
               <form
                 onSubmit={handleUpdateProfile}
-                className="flex justify-center"
+                className="flex items-center justify-center"
                 encType="multipart/form-data"
               >
-                <input type="file" filename="profile" onChange={preview} />
-                <button>Update</button>
+                <input type="file" filename="profile" onChange={preview} className="px-4 m-5 bg-black/50 text-white py-2"/>
+                <button className="bg-black text-white py-2.5 hover:bg-black/30 duration-200 px-4 rounded-lg">
+                  {upload ? "Updating photo...":"Update"}
+                </button>
               </form>
             </div>
           </div>

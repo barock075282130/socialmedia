@@ -5,12 +5,13 @@ import OpenImg from "./OpenImage";
 import Image from "next/image";
 import UploadProfileImage from "./UploadProfileImage";
 
-const ProfileImage = ({ user,router }) => {
+const ProfileImage = ({ user, router }) => {
   const [open, setOpen] = useState(false);
   const [openProfile, setOpenProfile] = useState(false);
-  const [ previewImg, setPreviewImg ] = useState(null)
+  const [previewImg, setPreviewImg] = useState(null);
   const [openUpload, setOpenUpload] = useState(null);
   const [profile, setProfile] = useState(null);
+  const [upload, setUpload] = useState(false);
   const img = "/profile.png";
   const handleOpenImg = () => {
     setOpen(!open);
@@ -45,6 +46,8 @@ const ProfileImage = ({ user,router }) => {
                 setPreviewImg={setPreviewImg}
                 user={user}
                 router={router}
+                upload={upload}
+                setUpload={setUpload}
               />
             </li>
           </ul>
@@ -81,7 +84,9 @@ const ProfileImage = ({ user,router }) => {
               setPreviewImg={setPreviewImg}
               user={user}
               router={router}
-              />
+              upload={upload}
+              setUpload={setUpload}
+            />
           </li>
           <li
             className="hover:text-gray-600 cursor-pointer"

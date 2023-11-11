@@ -7,6 +7,7 @@ import { userData } from "./context/userContext";
 import EditProfile from "./EditProfile";
 import UserProfile from "./UserProfile";
 import ProfileImage from "./profile/ProfileImage";
+import BackgroundImage from "./profile/BackgroundImage";
 
 const OtherUser = ({ currentUser, params, path }) => {
   if (currentUser !== params && path === "/profile") {
@@ -37,7 +38,9 @@ const Profile = () => {
             >
               {"<-"}
             </button>
-            <div className="bg-green-300 w-full h-28"></div>
+            <div className="bg-green-300 w-full h-28">
+              <BackgroundImage />
+            </div>
             <div className="absolute top-20 left-5">
               <ProfileImage user={user} router={router}/>
             </div>

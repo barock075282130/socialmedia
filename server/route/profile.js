@@ -109,7 +109,7 @@ router.patch("/upload_profile/:id", upload.single("profile"), async (req, res) =
         username: saveProfile.username,
         email: saveProfile.email,
         bgimg: saveProfile.bgimg,
-        profileimg: saveProfile.profileimg,
+        profileimg: uploadimg.url,
       },
       process.env.JWT,
       { expiresIn: "365d" }
