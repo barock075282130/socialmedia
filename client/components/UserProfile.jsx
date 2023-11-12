@@ -120,7 +120,20 @@ const UserProfile = ({ name }) => {
             >
               {"<-"}
             </button>
-            <div className="bg-green-300 w-full h-28"></div>
+            <div className="w-full">
+              <Image
+                src="/background.png"
+                alt="no_background"
+                width={0}
+                height={0}
+                sizes="100vw"
+                style={{
+                  width: "100%",
+                  height: "7rem",
+                  objectFit: "cover",
+                }}
+              />
+            </div>
             <div className="absolute top-20 left-5">
               <ProfileImage user={userInfo} />
             </div>

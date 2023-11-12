@@ -1,7 +1,6 @@
 import Image from "next/image";
 
 const UserList = ({ searchResult, user, gotoUser }) => {
-  console.log(searchResult)
   return (
     <>
       <div>

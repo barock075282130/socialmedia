@@ -78,7 +78,7 @@ const EditProfile = ({ open, setOpen }) => {
 
       <div>
         {open && (
-          <div className="fixed flex justify-center items-center top-0 left-0 w-screen h-screen bg-black/60">
+          <div className="fixed backdrop-blur-md flex justify-center items-center top-0 left-0 w-screen h-screen bg-black/60">
             <div className="bg-white px-10 py-4 rounded-lg top-1/3">
               <form onSubmit={changeUser} encType="multipart/form-data">
                 <div>

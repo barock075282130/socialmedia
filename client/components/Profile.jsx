@@ -38,7 +38,7 @@ const Profile = () => {
             >
               {"<-"}
             </button>
-            <div className="bg-green-300 w-full h-28">
+            <div className="w-full">
               <BackgroundImage />
             </div>
             <div className="absolute top-20 left-5">

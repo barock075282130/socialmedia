@@ -4,7 +4,7 @@ const { Post } = require("../models/post");
 const { Connected } = require("../utils/database");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
-const cloudinary = require('cloudinary').v2
+const cloudinary = require("cloudinary").v2;
 cloudinary.config({
   secure: true,
   cloud_name: "djtwy82dy",
@@ -22,7 +22,6 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage: storage });
-const imgUpload = upload.fields([{ name: "profile", maxCount: 1 }, { name: "background", maxCount: 1 }])
 
 router.get("/", async (req, res) => {
   const { username } = await req.user;
@@ -82,42 +81,82 @@ router.patch("/edit/:id", async (req, res) => {
   }
 });
 
-router.patch("/upload_profile/:id", upload.single("profile"), async (req, res) => {
-  const { id } = req.params;
-  const file = req.file
-  const auth = req.user
-  try {
-    if(auth.userId !== id){
-      return res.status(401).json("Auth Needed")
+router.patch("/upload_profile/:id",upload.single("profile"),async (req, res) => {
+    const { id } = req.params;
+    const file = req.file;
+    const auth = req.user;
+    try {
+      if (auth.userId !== id) {
+        return res.status(401).json("Auth Needed");
+      }
+      await Connected();
+      const saveProfile = await User.findById(id);
+      if (!saveProfile) {
+        return res.status(404).json("User not found");
+      }
+      const uploadimg = await cloudinary.uploader.upload(file.path);
+      const post = await Post.find({ userpostid: id });
+      for (let i = 0; i < post.length; i++) {
+        post[i].profile = uploadimg.url;
+        await post[i].save();
+      }
+      saveProfile.profileimg = uploadimg.url;
+      await saveProfile.save();
+      const token = jwt.sign(
+        {
+          userId: saveProfile._id,
+          username: saveProfile.username,
+          email: saveProfile.email,
+          bgimg: saveProfile.bgimg,
+          profileimg: uploadimg.url,
+        },
+        process.env.JWT,
+        { expiresIn: "365d" }
+      );
+      res.status(200).json({ token: token });
+    } catch (error) {
+      throw error;
     }
-    await Connected();
-    const saveProfile = await User.findById(id);
-    if(!saveProfile){
-      return res.status(404).json('User not found')
-    }
-    const uploadimg = await cloudinary.uploader.upload(file.path);
-    const post = await Post.find({ userpostid: id })
-    for(let i = 0; i < post.length; i++){
-      post[i].profile = uploadimg.url;
-      await post[i].save()
-    }
-    saveProfile.profileimg = uploadimg.url;
-    await saveProfile.save();
-    const token = jwt.sign(
-      {
-        userId: saveProfile._id,
-        username: saveProfile.username,
-        email: saveProfile.email,
-        bgimg: saveProfile.bgimg,
-        profileimg: uploadimg.url,
-      },
-      process.env.JWT,
-      { expiresIn: "365d" }
-    );
-    res.status(200).json({ token: token });
-  } catch (error) {
-    throw error;
   }
-});
+);
+
+router.patch("/upload_background/:id",upload.single("background"),async (req, res) => {
+    const { id } = req.params;
+    const file = req.file;
+    const auth = req.user;
+    try {
+      if (auth.userId !== id) {
+        return res.status(401).json("Auth Needed");
+      }
+      await Connected();
+      const saveProfile = await User.findById(id);
+      if (!saveProfile) {
+        return res.status(404).json("User not found");
+      }
+      const uploadimg = await cloudinary.uploader.upload(file.path);
+      const post = await Post.find({ userpostid: id });
+      for (let i = 0; i < post.length; i++) {
+        post[i].profile = uploadimg.url;
+        await post[i].save();
+      }
+      saveProfile.profileimg = uploadimg.url;
+      await saveProfile.save();
+      const token = jwt.sign(
+        {
+          userId: saveProfile._id,
+          username: saveProfile.username,
+          email: saveProfile.email,
+          bgimg: saveProfile.bgimg,
+          profileimg: uploadimg.url,
+        },
+        process.env.JWT,
+        { expiresIn: "365d" }
+      );
+      res.status(200).json({ token: token });
+    } catch (error) {
+      throw error;
+    }
+  }
+);
 
 module.exports = router;
