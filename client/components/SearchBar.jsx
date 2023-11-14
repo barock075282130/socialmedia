@@ -30,7 +30,7 @@ const SearchBar = () => {
   const [searchResult, setSearchResults] = useState([]);
   const serverUrl = "http://localhost:4000";
   const router = useRouter();
-  const gotoUser = (username) => router.push(`/profile?name=${username}`);
+  const gotoUser = (username) => router.push(`/profile/${username}`);
   useEffect(() => {
     const username = user.userId ? `/acc/${user.username}` : "/acc";
     const fetchUser = async () => {

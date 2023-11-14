@@ -2,24 +2,21 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { useContext, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import { userData } from "./context/userContext";
 import EditProfile from "./EditProfile";
 import UserProfile from "./UserProfile";
 import ProfileImage from "./profile/ProfileImage";
 import BackgroundImage from "./profile/BackgroundImage";
 
-const OtherUser = ({ currentUser, params, path }) => {
-  if (currentUser !== params && path === "/profile") {
+const OtherUser = ({ currentUser, params }) => {
+  const pathName = usePathname();
+  if (currentUser !== params && pathName === `/profile/${params}`) {
     return <UserProfile name={params} />;
   }
 };
 
-const Profile = () => {
+const Profile = ({ username }) => {
   const { user } = useContext(userData);
-  const params = useSearchParams();
-  const username = params.get("name");
-  const pathName = usePathname();
   const router = useRouter();
   const [open, setOpen] = useState(false);
   return (
@@ -27,7 +24,6 @@ const Profile = () => {
       <OtherUser
         currentUser={user?.username}
         params={username}
-        path={pathName}
       />
       {user?.username === username && (
         <>

@@ -25,7 +25,7 @@ const CheckUserLogin = ({ user, address, func }) => {
       <ul className="grid content-between gap-3 h-full">
         <div className="text-xl">
           <li>
-            <Link href={`/profile?name=${user?.username}`}>Profile</Link>
+            <Link href={`/profile/${user?.username}`}>Profile</Link>
           </li>
           <li>
             <Link href="/message">Message</Link>
