@@ -1,11 +1,9 @@
 import HomePage from "@components/HomePage";
 
-export default async function Home() {
-  const res = await fetch("http://localhost:4000/post/getpost");
-  const data = await res.json()
+export default function Home() {
   return (
     <div>
-      <HomePage data={data} />
+      <HomePage />
     </div>
   )
 }

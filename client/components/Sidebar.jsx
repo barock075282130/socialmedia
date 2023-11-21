@@ -21,14 +21,11 @@ const CheckUserLogin = ({ user, address, func }) => {
     );
   }
   return (
-    <aside className="h-full p-5">
-      <ul className="grid content-between gap-3 h-full">
+    <aside className="fixed h-screen p-5">
+      <ul className="grid h-full w-56  content-between gap-3 ">
         <div className="text-xl">
           <li>
             <Link href={`/profile/${user?.username}`}>Profile</Link>
-          </li>
-          <li>
-            <Link href="/message">Message</Link>
           </li>
         </div>
         <div>

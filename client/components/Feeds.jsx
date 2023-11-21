@@ -5,6 +5,7 @@ import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { userData } from "./context/userContext";
 import Post from "./Post";
+import EditPost from "./profile/EditPost";
 
 const deletePost = (posts, postId) => {
   return posts.filter((post) => post._id !== postId);
@@ -57,13 +58,30 @@ const PostImage = ({ data }) => {
 };
 
 const ShowFeed = ({
-  sortPost,
+  post,
   gotoProfile,
   handleDel,
   pathName,
   user,
+  openEdit,
+  setOpenEdit,
+  postEdit,
+  setPostEdit,
 }) => {
-  if (sortPost.length === 0 || sortPost.length < 0) {
+  const [loading, setLoading] = useState(false);
+  const handleEdit = (data) => {
+    setOpenEdit(true);
+    const arr = data.posttext
+      .map((s) => s.props.children)
+      .join()
+      .replace(/,/g, "");
+    setPostEdit({
+      ...data,
+      posttext: arr 
+    })
+  };
+
+  if (post.length === 0 || post.length < 0) {
     return (
       <>
         <div className="flex justify-center mt-5">
@@ -72,10 +90,25 @@ const ShowFeed = ({
       </>
     );
   }
+  if (openEdit) {
+    return (
+      <>
+        <EditPost 
+          setLoading={setLoading}
+          loading={loading}
+          setPostEdit={setPostEdit}
+          postEdit={postEdit}
+          setOpenEdit={setOpenEdit}
+          user={user}
+          post={post}
+        />
+      </>
+    );
+  }
   return (
     <>
-      {sortPost
-        ? sortPost.map((data, i) => (
+      {post
+        ? post.map((data, i) => (
             <div
               className="m-1 border grid grid-cols-11 py-2 rounded-md"
               key={i}
@@ -94,11 +127,16 @@ const ShowFeed = ({
                   <p className="font-semibold">{data.username}</p>
                   <p className="font-normal text-gray-400">{data.address}</p>
                 </div>
-                <p>{data?.posttext}</p>
+                <div>{data?.posttext}</div>
                 <PostImage data={data?.img} />
-                {pathName === "/profile" && username === user?.username && (
+                {pathName === `/profile/${user?.username}` && (
                   <div className="flex justify-center gap-3">
-                    <button className="text-blue-400">edit</button>
+                    <button
+                      className="text-blue-400"
+                      onClick={() => handleEdit(data)}
+                    >
+                      edit
+                    </button>
                     <button
                       className="text-red-400"
                       onClick={() => handleDel(data._id)}
@@ -115,10 +153,12 @@ const ShowFeed = ({
   );
 };
 
-const Feeds = ({ data }) => {
+const Feeds = ({ name }) => {
   const serverUrl = "http://localhost:4000";
   const [updatePost, setUpdatePost] = useState("");
-  const [ post, setPost ] = useState([])
+  const [openEdit, setOpenEdit] = useState(false);
+  const [post, setPost] = useState([]);
+  const [postEdit, setPostEdit] = useState([]);
   const { user } = useContext(userData);
   const router = useRouter();
   const pathName = usePathname();
@@ -147,20 +187,52 @@ const Feeds = ({ data }) => {
       }
     }
   };
-  const sortPost = [...data].reverse(data.time);
+  useEffect(() => {
+    const path =
+      pathName === `/`
+        ? `${serverUrl}/post/getpost`
+        : `${serverUrl}/post/${name.slug}`;
+
+    const fetchPost = async () => {
+      try {
+        const res = await fetch(path, {
+          method: "GET",
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const newLines = data.map((all) => {
+            all.posttext = all.posttext
+              .split("\n")
+              .map((str, i) => <p key={i}>{str}</p>);
+            return all;
+          });
+          setPost(newLines);
+        }
+      } catch (error) {
+        throw error;
+      }
+    };
+    fetchPost();
+  }, []);
   return (
     <>
       <ShowPost
+        post={post}
+        setPost={setPost}
         path={pathName}
         updatePost={updatePost}
         setUpdatePost={setUpdatePost}
       />
       <ShowFeed
-        sortPost={sortPost}
+        post={post}
         gotoProfile={gotoProfile}
         handleDel={handleDel}
         pathName={pathName}
         user={user}
+        openEdit={openEdit}
+        setOpenEdit={setOpenEdit}
+        postEdit={postEdit}
+        setPostEdit={setPostEdit}
       />
     </>
   );

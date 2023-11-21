@@ -42,7 +42,7 @@ router.get("/getpost", async (req, res) => {
     if (!data) {
       return res.status(404).json("post not found");
     }
-    const post = [];
+    const post = [].reverse();
     data.map((items) => {
       const postdata = {
         userpostid: items.userpostid,
@@ -57,6 +57,7 @@ router.get("/getpost", async (req, res) => {
       };
       post.push(postdata);
     });
+    console.log(post)
     return res.status(200).json(post);
   } catch (error) {
     return res.status(500).json("fetch failed");
@@ -67,6 +68,7 @@ router.get("/:username", async (req, res) => {
   const { username } = req.params;
   try {
     const getUserPost = await Post.find({ username: username });
+
     if (!getUserPost) {
       return res.status(404).json("No Post Yet");
     }
@@ -92,5 +94,26 @@ router.delete("/del", authUser, async (req, res) => {
   }
   return res.status(401).json('need permission')
 });
+
+router.patch("/editpost/:username", authUser ,async(req,res)=>{
+  const { text, postId, user } = await req.body;
+  const { username } = req.params
+  const { userId } = await req.user
+  try {
+    await Connected()
+    if(user !== userId){
+      return res.status(400)
+    }
+    const getPost = await Post.find({ username: username }).where({ _id: postId })
+    if(!getPost){
+      return res.status(404).json('Not Found 404')
+    }
+    getPost[0].posttext = text
+    await getPost[0].save()
+    return res.status(200).json({ text: getPost[0].posttext })
+  } catch (error) {
+    throw error
+  }
+})
 
 module.exports = router;
