@@ -42,7 +42,7 @@ router.get("/getpost", async (req, res) => {
     if (!data) {
       return res.status(404).json("post not found");
     }
-    const post = [].reverse();
+    const post = [];
     data.map((items) => {
       const postdata = {
         userpostid: items.userpostid,
@@ -57,7 +57,6 @@ router.get("/getpost", async (req, res) => {
       };
       post.push(postdata);
     });
-    console.log(post)
     return res.status(200).json(post);
   } catch (error) {
     return res.status(500).json("fetch failed");

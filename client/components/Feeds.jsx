@@ -58,7 +58,7 @@ const PostImage = ({ data }) => {
 };
 
 const ShowFeed = ({
-  post,
+  sort,
   gotoProfile,
   handleDel,
   pathName,
@@ -81,7 +81,7 @@ const ShowFeed = ({
     })
   };
 
-  if (post.length === 0 || post.length < 0) {
+  if (sort.length === 0 || sort.length < 0) {
     return (
       <>
         <div className="flex justify-center mt-5">
@@ -100,15 +100,15 @@ const ShowFeed = ({
           postEdit={postEdit}
           setOpenEdit={setOpenEdit}
           user={user}
-          post={post}
+          sort={sort}
         />
       </>
     );
   }
   return (
     <>
-      {post
-        ? post.map((data, i) => (
+      {sort
+        ? sort.map((data, i) => (
             <div
               className="m-1 border grid grid-cols-11 py-2 rounded-md"
               key={i}
@@ -214,6 +214,7 @@ const Feeds = ({ name }) => {
     };
     fetchPost();
   }, []);
+  const sort = [...post].reverse(post.time)
   return (
     <>
       <ShowPost
@@ -224,7 +225,7 @@ const Feeds = ({ name }) => {
         setUpdatePost={setUpdatePost}
       />
       <ShowFeed
-        post={post}
+        sort={sort}
         gotoProfile={gotoProfile}
         handleDel={handleDel}
         pathName={pathName}

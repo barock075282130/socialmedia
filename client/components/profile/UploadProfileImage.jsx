@@ -48,7 +48,7 @@ const UploadProfileImage = ({
         const token = json.token
         localStorage.removeItem("x-access-token");
         localStorage.setItem("x-access-token", token);
-        router.push(`/profile?name=${user?.username}`);
+        router.push(`/profile/${user?.username}`);
         setTimeout(() => window.location.reload(false), 300);
       }
     } catch (error) {

@@ -7,7 +7,7 @@ const OpenImg = ({ openProfile, setOpenProfile, user }) => {
     if (openProfile) {
       return (
         <>
-          <div className="bg-black w-screen h-full fixed top-0 left-0 z-50">
+          <div className="bg-black/50 backdrop-blur-md w-screen h-full fixed top-0 left-0 z-50">
             <button
               onClick={handleClose}
               className="absolute left-5 top-2 bg-white rounded-full p-1"
@@ -26,8 +26,13 @@ const OpenImg = ({ openProfile, setOpenProfile, user }) => {
                 <Image
                   src={user?.profileImg}
                   alt="profile"
-                  width={800}
-                  height={800}
+                  width={0}
+                  height={0}
+                  sizes="100vh"
+                  style={{
+                    width: "auto",
+                    height: "500px"
+                  }}
                 />
               )}
             </div>

@@ -134,20 +134,15 @@ router.patch("/upload_background/:id",upload.single("background"),async (req, re
         return res.status(404).json("User not found");
       }
       const uploadimg = await cloudinary.uploader.upload(file.path);
-      const post = await Post.find({ userpostid: id });
-      for (let i = 0; i < post.length; i++) {
-        post[i].profile = uploadimg.url;
-        await post[i].save();
-      }
-      saveProfile.profileimg = uploadimg.url;
+      saveProfile.bgimg = uploadimg.url;
       await saveProfile.save();
       const token = jwt.sign(
         {
           userId: saveProfile._id,
           username: saveProfile.username,
           email: saveProfile.email,
-          bgimg: saveProfile.bgimg,
-          profileimg: uploadimg.url,
+          bgimg: uploadimg.url,
+          profileimg: saveProfile.profileimg,
         },
         process.env.JWT,
         { expiresIn: "365d" }
