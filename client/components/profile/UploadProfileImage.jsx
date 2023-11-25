@@ -93,7 +93,7 @@ const UploadProfileImage = ({
                 className="flex items-center justify-center"
                 encType="multipart/form-data"
               >
-                <input type="file" filename="profile" onChange={preview} className="px-4 m-5 bg-black/50 text-white py-2"/>
+                <input type="file" filename="profile" accept="image/png, image/jpeg" onChange={preview} className="px-4 m-5 bg-black/50 text-white py-2"/>
                 <button className="bg-black text-white py-2.5 hover:bg-black/30 duration-200 px-4 rounded-lg">
                   {upload ? "Updating photo...":"Update"}
                 </button>

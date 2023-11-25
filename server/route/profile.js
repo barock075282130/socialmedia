@@ -3,25 +3,20 @@ const User = require("../models/user").User;
 const { Post } = require("../models/post");
 const { Connected } = require("../utils/database");
 const jwt = require("jsonwebtoken");
+const fs = require('node:fs')
 const multer = require("multer");
+const path = require("node:path");
+const os = require("os")
 const cloudinary = require("cloudinary").v2;
 cloudinary.config({
   secure: true,
-  cloud_name: "djtwy82dy",
-  api_key: "921867468333651",
-  api_secret: "Pn1SkPpoRT9zT-pVhHXUOtzunIQ",
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_KEY,
+  api_secret: process.env.CLOUD_SECRET,
 });
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "./public/uploads/");
-  },
-  filename: function (req, file, cb) {
-    const name = Math.floor(Math.random() * 999999) + ".png";
-    cb(null, file.fieldname + "-" + name);
-  },
-});
-const upload = multer({ storage: storage });
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 router.get("/", async (req, res) => {
   const { username } = await req.user;
@@ -94,13 +89,25 @@ router.patch("/upload_profile/:id",upload.single("profile"),async (req, res) => 
       if (!saveProfile) {
         return res.status(404).json("User not found");
       }
-      const uploadimg = await cloudinary.uploader.upload(file.path);
+      const tempfilepath = path.join(os.tmpdir(), file.originalname)
+      fs.writeFileSync(tempfilepath, file.buffer)
+      const uploading = fs.readFileSync(tempfilepath);
+      const uploadimg = await new Promise((resolve) => {
+        cloudinary.uploader
+          .upload_stream({ folder: 'profiles' }, (error, uploadResult) => {
+            if (error) {
+              return res.status(400).send("Bad Request");
+            }
+            return resolve(uploadResult);
+          })
+          .end(uploading);
+      })
       const post = await Post.find({ userpostid: id });
       for (let i = 0; i < post.length; i++) {
-        post[i].profile = uploadimg.url;
+        post[i].profile = uploadimg.secure_url;
         await post[i].save();
       }
-      saveProfile.profileimg = uploadimg.url;
+      saveProfile.profileimg = uploadimg.secure_url;
       await saveProfile.save();
       const token = jwt.sign(
         {
@@ -108,7 +115,7 @@ router.patch("/upload_profile/:id",upload.single("profile"),async (req, res) => 
           username: saveProfile.username,
           email: saveProfile.email,
           bgimg: saveProfile.bgimg,
-          profileimg: uploadimg.url,
+          profileimg: uploadimg.secure_url,
         },
         process.env.JWT,
         { expiresIn: "365d" }
@@ -133,15 +140,27 @@ router.patch("/upload_background/:id",upload.single("background"),async (req, re
       if (!saveProfile) {
         return res.status(404).json("User not found");
       }
-      const uploadimg = await cloudinary.uploader.upload(file.path);
-      saveProfile.bgimg = uploadimg.url;
+      const tempfilepath = path.join(os.tmpdir(), file.originalname)
+      fs.writeFileSync(tempfilepath, file.buffer)
+      const uploading = fs.readFileSync(tempfilepath)
+      const uploadimg = await new Promise((resolve) => {
+        cloudinary.uploader
+          .upload_stream({ folder: "backgrounds" }, (err, uploadResult) => {
+            if (err) {
+              return res.status(400).send("Upload Error");
+            }
+            return resolve(uploadResult);
+          })
+          .end(uploading);
+      });
+      saveProfile.bgimg = uploadimg.secure_url;
       await saveProfile.save();
       const token = jwt.sign(
         {
           userId: saveProfile._id,
           username: saveProfile.username,
           email: saveProfile.email,
-          bgimg: uploadimg.url,
+          bgimg: uploadimg.secure_url,
           profileimg: saveProfile.profileimg,
         },
         process.env.JWT,

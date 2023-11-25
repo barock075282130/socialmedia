@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useContext, useState } from "react";
 import { userData } from "./context/userContext";
-import EditProfile from "./EditProfile";
+import EditProfile from "./profile/EditProfile";
 import UserProfile from "./UserProfile";
 import ProfileImage from "./profile/ProfileImage";
 import BackgroundImage from "./profile/BackgroundImage";
