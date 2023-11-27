@@ -5,26 +5,60 @@ import { userData } from "./context/userContext";
 import Image from "next/image";
 
 const PreviewPostImg = ({ setOpenPre, img }) => {
+  const [imgNum, setImgNum] = useState(0);
+  const handleNextSlideImg = () => {
+    setImgNum((prev) => prev + 1);
+  };
+  const handlePrevSlideImg = () => {
+    setImgNum((prev) => prev - 1);
+  };
   return (
-    <div className="fixed top-0 left-0 w-screen h-screen bg-black/50 backdrop-blur-md z-50 flex justify-center items-center">
-      <button
-        onClick={() => setOpenPre(false)}
-        className="absolute left-5 top-2 bg-white rounded-full p-1"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          height="2em"
-          viewBox="0 0 384 512"
-          className="fill-red-400 w-8 h-8"
+    <div className="fixed top-0 left-0 w-screen h-screen bg-black/50 backdrop-blur-md z-50 grid">
+      <div className="flex justify-center items-center">
+        <button
+          onClick={() => setOpenPre(false)}
+          className="absolute left-5 top-2 bg-white rounded-full p-1"
         >
-          <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
-        </svg>
-      </button>
-      {img.map((pic, i) => (
-        <div key={i}>
-          <Image src={pic} alt={`preview_${pic}`} width={500} height={500} />
-        </div>
-      ))}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="2em"
+            viewBox="0 0 384 512"
+            className="fill-red-400 w-8 h-8"
+          >
+            <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+          </svg>
+        </button>
+        {img && (
+          <>
+            <div className="relative px-20">
+              <Image
+                src={img[imgNum]}
+                alt={`preview_${img[imgNum]}`}
+                width={500}
+                height={500}
+              />
+              <div className="absolute top-0 left-0 flex justify-between items-center h-full w-full">
+                {imgNum > 0 && imgNum <= img.length ? (
+                  <button onClick={() => handlePrevSlideImg()}>
+                    <div className="w-10 h-10  bg-black text-white font-extrabold flex items-center justify-center rounded-full">
+                      {"<"}
+                    </div>
+                  </button>
+                ) : (
+                  <div></div>
+                )}
+                {imgNum !== img.length - 1 ? (
+                  <button onClick={() => handleNextSlideImg()}>
+                    <div className="w-10 h-10 bg-black text-white font-extrabold flex items-center justify-center rounded-full">
+                      {">"}
+                    </div>
+                  </button>
+                ) : null}
+              </div>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 };
@@ -80,7 +114,12 @@ const Post = ({ post, setPost, updatePost, setUpdatePost, type }) => {
   };
   return (
     <>
-      {openPre && <PreviewPostImg setOpenPre={setOpenPre} img={preview} />}
+      {openPre && (
+        <PreviewPostImg
+          setOpenPre={setOpenPre}
+          img={preview}
+        />
+      )}
       {user?.userId && (
         <div className="mb-3 p-1">
           <div className="relative">
