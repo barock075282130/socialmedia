@@ -51,10 +51,17 @@ const ShowImage = ({ data }) => {
 };
 
 const PostImage = ({ data }) => {
-  if (!data) {
-    return;
+  if (data?.length > 0) {
+    return (
+      <div className="grid grid-cols-2 place-items-center gap-3">
+        {data.map((img, i) => (
+          <div key={i}>
+            <Image src={img} alt={`photo_${img}`} width={200} height={200} />
+          </div>
+        ))}
+      </div>
+    );
   }
-  return <Image src={data.img} alt={data.img} width={100} height={100} />;
 };
 
 const ShowFeed = ({
@@ -77,8 +84,8 @@ const ShowFeed = ({
       .replace(/,/g, "");
     setPostEdit({
       ...data,
-      posttext: arr 
-    })
+      posttext: arr,
+    });
   };
 
   if (sort.length === 0 || sort.length < 0) {
@@ -93,7 +100,7 @@ const ShowFeed = ({
   if (openEdit) {
     return (
       <>
-        <EditPost 
+        <EditPost
           setLoading={setLoading}
           loading={loading}
           setPostEdit={setPostEdit}
@@ -128,7 +135,7 @@ const ShowFeed = ({
                   <p className="font-normal text-gray-400">{data.address}</p>
                 </div>
                 <div>{data?.posttext}</div>
-                <PostImage data={data?.img} />
+                <PostImage data={data?.postimg} />
                 {pathName === `/profile/${user?.username}` && (
                   <div className="flex justify-center gap-3">
                     <button
@@ -214,7 +221,7 @@ const Feeds = ({ name }) => {
     };
     fetchPost();
   }, []);
-  const sort = [...post].reverse(post.time)
+  const sort = [...post].reverse(post.time);
   return (
     <>
       <ShowPost

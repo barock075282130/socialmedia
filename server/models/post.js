@@ -1,4 +1,4 @@
-const { Schema, model, models } = require('mongoose');
+const { Schema, model, models } = require("mongoose");
 
 const postSchema = new Schema({
   userpostid: {
@@ -14,13 +14,7 @@ const postSchema = new Schema({
   posttext: {
     type: String,
   },
-  postImg: [
-    {
-      img: {
-        type: String,
-      },
-    },
-  ],
+  postimg: [{ type: String }],
   day: {
     type: String,
   },

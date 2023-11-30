@@ -1,16 +1,16 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const PORT = 4000
 const path = require('path')
+const bodyParser = require('body-parser')
 require('dotenv').config()
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(cors());
-app.use(express.json())
-app.use(express.urlencoded({
+app.use(bodyParser.urlencoded({
     extended: true,
-    limit: '10mb',
-}))
+    limit: "10mb"
+}));
+app.use(bodyParser.json())
 
 const register = require('./route/register');
 const signin = require('./route/signin');
@@ -27,6 +27,4 @@ app.use('/userdata', getuser);
 app.use('/acc', acc)
 app.use('/profile', authUser , profile)
 
-app.listen(PORT, ()=>{
-    console.log(`app running on ${PORT}`)
-})
+module.exports = app;

@@ -69,6 +69,11 @@ const Post = ({ post, setPost, updatePost, setUpdatePost, type }) => {
   const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState([]);
   const [openPre, setOpenPre] = useState(false);
+  const [images, setImages] = useState([]);
+  const handlePostData = (e) => {
+    const text = e.target.value;
+    setUpdatePost(text);
+  };
   const handlePreview = (e) => {
     e.preventDefault();
     const img = [...e.target.files];
@@ -79,112 +84,104 @@ const Post = ({ post, setPost, updatePost, setUpdatePost, type }) => {
       allImage.push(url);
     }
     setPreview(allImage);
+    setImages(img);
   };
-  const handlePost = async () => {
-    if (!updatePost || updatePost === "") {
-      alert("Post Empty!!");
-    } else {
-      setLoading(true);
-      try {
-        const res = await fetch(`${serverUrl}/post`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: user?.userId,
-            post: updatePost,
-          }),
-        });
-        if (res.ok) {
-          setUpdatePost("");
-          const data = await res.json();
-          const newLine = data.posttext
-            .split("\n")
-            .map((str, i) => <p key={i}>{str}</p>);
-          const newData = { ...data, posttext: newLine };
-          setPost([...post, newData]);
-        }
-      } catch (error) {
-        throw error;
-      } finally {
-        setLoading(false);
+  const handlePost = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const form = new FormData();
+      for (let i = 0; i < images.length; i++) {
+        form.append("image", images[i]);
       }
+      form.append("postText", updatePost);
+      const res = await fetch(`${serverUrl}/post`, {
+        method: "POST",
+        headers: {
+          "x-access-token": "Bearer " + localStorage.getItem("x-access-token"),
+        },
+        body: form,
+      });
+      if (res.ok) {
+        setUpdatePost("");
+        setPreview([])
+        const data = await res.json();
+        const newLine = data.posttext
+          .split("\n")
+          .map((str, i) => <p key={i}>{str}</p>);
+        const newData = { ...data, posttext: newLine, postimg: data.postimg };
+        setPost([...post, newData]);
+      }
+    } catch (error) {
+      throw error;
+    } finally {
+      setLoading(false);
     }
   };
+  console.log(post)
   return (
     <>
-      {openPre && (
-        <PreviewPostImg
-          setOpenPre={setOpenPre}
-          img={preview}
-        />
-      )}
+      {openPre && <PreviewPostImg setOpenPre={setOpenPre} img={preview} />}
       {user?.userId && (
         <div className="mb-3 p-1">
-          <div className="relative">
-            <div className="absolute right-0 bottom-2 p-1 flex items-center">
-              {preview.length > 0 && (
-                <div className="relative w-[100px] h-[100px] flex justify-center items-center">
-                  <div
-                    className="w-full h-full bg-black/50 hover:bg-black/80 duration-300 cursor-pointer rounded-md absolute"
-                    onClick={() => setOpenPre(true)}
-                  />
-                  <p className="absolute flex justify-center font-bold text-4xl text-white">
-                    {preview.length}
-                  </p>
-                  <Image
-                    src={preview[0]}
-                    alt={`preview_${preview[0]}`}
-                    width={100}
-                    height={100}
-                  />
-                </div>
-              )}
+          <form onSubmit={handlePost} encType="multipart/form-data">
+            <div className="relative">
+              <div className="absolute right-0 bottom-2 p-1 flex items-center">
+                {preview.length > 0 && (
+                  <div className="relative w-[100px] h-[100px] flex justify-center items-center">
+                    <div
+                      className="w-full h-full bg-black/50 hover:bg-black/80 duration-300 cursor-pointer rounded-md absolute"
+                      onClick={() => setOpenPre(true)}
+                    />
+                    <p className="absolute flex justify-center font-bold text-4xl text-white">
+                      {preview.length}
+                    </p>
+                    <Image
+                      src={preview[0]}
+                      alt={`preview_${preview[0]}`}
+                      width={100}
+                      height={100}
+                    />
+                  </div>
+                )}
+              </div>
+              <textarea
+                name="postText"
+                cols="30"
+                rows="5"
+                className="resize-none w-full p-3 border rounded-md"
+                value={updatePost}
+                onChange={handlePostData}
+                required
+              ></textarea>
             </div>
-            <textarea
-              name="postText"
-              cols="30"
-              rows="5"
-              className="resize-none w-full p-3 border rounded-md"
-              value={updatePost}
-              onChange={(e) => setUpdatePost(e.target.value)}
-            ></textarea>
-          </div>
-          <div className="flex justify-between items-center">
-            <div className="flex gap-2 px-2">
-              <label className=" cursor-pointer">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="1em"
-                  viewBox="0 0 512 512"
-                  className="w-5 h-5"
-                >
-                  <path d="M448 80c8.8 0 16 7.2 16 16V415.8l-5-6.5-136-176c-4.5-5.9-11.6-9.3-19-9.3s-14.4 3.4-19 9.3L202 340.7l-30.5-42.7C167 291.7 159.8 288 152 288s-15 3.7-19.5 10.1l-80 112L48 416.3l0-.3V96c0-8.8 7.2-16 16-16H448zM64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zm80 192a48 48 0 1 0 0-96 48 48 0 1 0 0 96z" />
-                </svg>
-                <input
-                  type="file"
-                  name="image"
-                  accept="image/png, image/jpeg"
-                  onChange={handlePreview}
-                  multiple
-                />
-              </label>
-            </div>
-            <div className="flex gap-2">
-              <button className="blue_btn cursor-pointer" onClick={handlePost}>
-                {loading ? `${type}...` : type}
-              </button>
-              {type === "Edit" && (
-                <button
-                  className="gray_btn cursor-pointer"
-                  onClick={() => setOpenEdit(false)}
-                >
-                  Cancel
+            <div className="flex justify-between items-center">
+              <div className="flex gap-2 px-2">
+                <label className=" cursor-pointer">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="1em"
+                    viewBox="0 0 512 512"
+                    className="w-5 h-5"
+                  >
+                    <path d="M448 80c8.8 0 16 7.2 16 16V415.8l-5-6.5-136-176c-4.5-5.9-11.6-9.3-19-9.3s-14.4 3.4-19 9.3L202 340.7l-30.5-42.7C167 291.7 159.8 288 152 288s-15 3.7-19.5 10.1l-80 112L48 416.3l0-.3V96c0-8.8 7.2-16 16-16H448zM64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zm80 192a48 48 0 1 0 0-96 48 48 0 1 0 0 96z" />
+                  </svg>
+                  <input
+                    type="file"
+                    filename="image"
+                    accept="image/png, image/jpeg"
+                    onChange={handlePreview}
+                    multiple
+                  />
+                </label>
+              </div>
+              <div className="flex gap-2">
+                <button className="blue_btn cursor-pointer">
+                  {loading ? `${type}...` : type}
                 </button>
-              )}
+              </div>
             </div>
-          </div>
+          </form>
         </div>
       )}
     </>

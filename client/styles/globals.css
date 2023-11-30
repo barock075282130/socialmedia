@@ -14,6 +14,6 @@ input{
     @apply px-6 py-2 rounded-lg mt-2 mb-4 border
 }
 
-input[name="image"] {
+input[filename="image"] {
     display: none;
 }

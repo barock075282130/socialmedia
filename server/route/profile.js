@@ -4,7 +4,7 @@ const { Post } = require("../models/post");
 const { Connected } = require("../utils/database");
 const jwt = require("jsonwebtoken");
 const fs = require('node:fs')
-const multer = require("multer");
+const upload = require('../middleware/uploadfile')
 const path = require("node:path");
 const os = require("os")
 const cloudinary = require("cloudinary").v2;
@@ -14,9 +14,6 @@ cloudinary.config({
   api_key: process.env.CLOUD_KEY,
   api_secret: process.env.CLOUD_SECRET,
 });
-
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
 
 router.get("/", async (req, res) => {
   const { username } = await req.user;
