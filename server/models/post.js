@@ -14,7 +14,16 @@ const postSchema = new Schema({
   posttext: {
     type: String,
   },
-  postimg: [{ type: String }],
+  postimg: [
+    {
+      link : {
+        type: String
+      },
+      alt : {
+        type: String
+      } 
+    }
+  ],
   day: {
     type: String,
   },

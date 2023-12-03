@@ -33,7 +33,7 @@ router.post("/", authUser, upload.array("image", 5), async (req, res) => {
     const address = email.split("@")[1];
     const time = new DateTime().createTime();
     const day = new DateTime().createDay();
-    let allimg = []
+    let allimg = [];
     if (image.length > 0) {
       for (let i = 0; i < image.length; i++) {
         const tempfilepath = path.join(os.tmpdir(), image[i].originalname);
@@ -49,7 +49,7 @@ router.post("/", authUser, upload.array("image", 5), async (req, res) => {
             })
             .end(uploading);
         });
-        allimg.push(uploadimg.secure_url)
+        allimg.push({ link: uploadimg.secure_url, alt: uploadimg.public_id });
       }
       const createPost = new Post({
         userpostid: auth.userId,
@@ -124,20 +124,30 @@ router.get("/:username", async (req, res) => {
 });
 
 router.delete("/del", authUser, async (req, res) => {
-  const { postId, user } = await req.body;
+  const { postId } = await req.body;
   const { userId } = await req.user;
-  if (userId === user) {
-    try {
-      const del = await Post.findByIdAndRemove(postId);
-      if (!del) {
-        return res.status(400).json("Delete fail");
-      }
-      return res.status(200).json("Delete successfully");
-    } catch (error) {
-      return res.status(500).json("fetch failed");
-    }
+  if (!userId) {
+    return res.status(401).send("need permission");
   }
-  return res.status(401).json("need permission");
+  try {
+    const findImg = await Post.findById(postId);
+    const del = await Post.findByIdAndRemove(postId);
+
+    if (!del) {
+      return res.status(400).json("Delete fail");
+    }
+    if (findImg.postimg.length > 0) {
+      for(let i = 0; i < findImg.postimg.length; i++){
+        cloudinary.api
+          .delete_resources([findImg.postimg[i].alt])
+      }
+      return res.status(200).send("Delete successfully");
+    }
+
+    return res.status(200).json("Delete successfully");
+  } catch (error) {
+    return res.status(500).json("fetch failed");
+  }
 });
 
 router.patch("/editpost/:username", authUser, async (req, res) => {

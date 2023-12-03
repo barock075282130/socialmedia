@@ -726,6 +726,12 @@ video {
 .w-screen {
   width: 100vw;
 }
+.w-9 {
+  width: 2.25rem;
+}
+.w-80 {
+  width: 20rem;
+}
 .cursor-pointer {
   cursor: pointer;
 }
@@ -738,11 +744,11 @@ video {
 .grid-cols-11 {
   grid-template-columns: repeat(11, minmax(0, 1fr));
 }
-.grid-cols-7 {
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-}
 .grid-cols-2 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.grid-cols-7 {
+  grid-template-columns: repeat(7, minmax(0, 1fr));
 }
 .flex-col {
   flex-direction: column;

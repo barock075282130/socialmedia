@@ -146,6 +146,11 @@ const UserProfile = ({ name }) => {
               @{userInfo?.data?.email.split("@")[1]}
             </span>
           </div>
+          <div className="flex justify-center">
+            <button className=" bg-black text-white rounded-full h-10 w-80 hover:bg-black/80">
+              Follow
+            </button>
+          </div>
         </div>
       )}
     </>

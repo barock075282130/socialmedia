@@ -51,12 +51,13 @@ const ShowImage = ({ data }) => {
 };
 
 const PostImage = ({ data }) => {
+  console.log(data)
   if (data?.length > 0) {
     return (
       <div className="grid grid-cols-2 place-items-center gap-3">
         {data.map((img, i) => (
           <div key={i}>
-            <Image src={img} alt={`photo_${img}`} width={200} height={200} />
+            <Image src={img.link} alt={`photo_${img.alt}`} width={200} height={200} />
           </div>
         ))}
       </div>
@@ -181,7 +182,6 @@ const Feeds = ({ name }) => {
               "Bearer " + localStorage.getItem("x-access-token"),
           },
           body: JSON.stringify({
-            user: user?.userId,
             postId: id,
           }),
         });
