@@ -51,7 +51,6 @@ const ShowImage = ({ data }) => {
 };
 
 const PostImage = ({ data }) => {
-  console.log(data)
   if (data?.length > 0) {
     return (
       <div className="grid grid-cols-2 place-items-center gap-3">
@@ -113,8 +112,21 @@ const ShowFeed = ({
       </>
     );
   }
+  const getData = async() => {
+    try {
+      const res = await fetch(`http://localhost:4000/follow/follower/${user?.userId}`,{
+        method: "GET",
+      })
+      console.log(await res.json())
+    } catch (error) {
+      throw error
+    }
+  }
   return (
     <>
+    <div>
+      <button onClick={()=> getData()}>GET</button>
+    </div>
       {sort
         ? sort.map((data, i) => (
             <div

@@ -92,6 +92,22 @@ const UserProfile = ({ name }) => {
   const router = useRouter();
   const [userInfo, setUserInfo] = useState(null);
   const serverUrl = "http://localhost:4000";
+  const handleFollow = async(data) => {
+    try {
+      const res = await fetch('http://localhost:4000/follow',{
+        method: 'POST',
+        headers: {
+          'Content-Type':'application/json',
+          'x-access-token': 'Bearer ' + localStorage.getItem('x-access-token')
+        },
+        body: JSON.stringify({
+          username: data
+        })
+      })
+    } catch (error) {
+      throw error
+    }
+  }
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -147,7 +163,10 @@ const UserProfile = ({ name }) => {
             </span>
           </div>
           <div className="flex justify-center">
-            <button className=" bg-black text-white rounded-full h-10 w-80 hover:bg-black/80">
+            <button 
+              onClick={()=>handleFollow(userInfo?.data?.username)}
+              className=" bg-black text-white rounded-full h-10 w-80 hover:bg-black/80"
+            >
               Follow
             </button>
           </div>

@@ -118,7 +118,6 @@ const Post = ({ post, setPost, updatePost, setUpdatePost, type }) => {
       setLoading(false);
     }
   };
-  console.log(post)
   return (
     <>
       {openPre && <PreviewPostImg setOpenPre={setOpenPre} img={preview} />}
@@ -173,7 +172,7 @@ const Post = ({ post, setPost, updatePost, setUpdatePost, type }) => {
                     onChange={handlePreview}
                     multiple
                   />
-                </label>
+                </label>  
               </div>
               <div className="flex gap-2">
                 <button className="blue_btn cursor-pointer">
