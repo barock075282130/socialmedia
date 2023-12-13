@@ -1,8 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Image from "next/image";
+import useFollow from "@hooks/follow";
+import { userData } from "./context/userContext";
 
 const OpenImg = ({ img, open, setOpen }) => {
   if (open) {
@@ -88,25 +90,55 @@ const ProfileImage = ({ user }) => {
   );
 };
 
+const HandleFollow = ({ userinfo, handleFollow, handleUnFollow }) => {
+  const { user } = useContext(userData);
+  const { follow } = useFollow(user?.userId);
+  for (let i = 0; i < follow.length; i++) {
+    const has = follow.some((fol) => fol.username === userinfo.data.username);
+    if (has) {
+      return (
+        <button
+          onClick={() => handleUnFollow(userinfo?.data?.username)}
+          className=" bg-black text-white rounded-full h-10 w-80 hover:bg-black/80"
+        >
+          Unfollow
+        </button>
+      );
+    } else {
+      return (
+        <button
+          onClick={() => handleFollow(userinfo?.data?.username)}
+          className=" bg-black text-white rounded-full h-10 w-80 hover:bg-black/80"
+        >
+          Follow
+        </button>
+      );
+    }
+  }
+};
+
 const UserProfile = ({ name }) => {
   const router = useRouter();
   const [userInfo, setUserInfo] = useState(null);
   const serverUrl = "http://localhost:4000";
-  const handleFollow = async(data) => {
+  const handleFollow = async (data) => {
     try {
-      const res = await fetch('http://localhost:4000/follow',{
-        method: 'POST',
+      const res = await fetch("http://localhost:4000/follow", {
+        method: "POST",
         headers: {
-          'Content-Type':'application/json',
-          'x-access-token': 'Bearer ' + localStorage.getItem('x-access-token')
+          "Content-Type": "application/json",
+          "x-access-token": "Bearer " + localStorage.getItem("x-access-token"),
         },
         body: JSON.stringify({
-          username: data
-        })
-      })
+          username: data,
+        }),
+      });
     } catch (error) {
-      throw error
+      throw error;
     }
+  };
+  const handleUnFollow = async(data) => {
+    //** delete follow data in database function **
   }
   useEffect(() => {
     const fetchUser = async () => {
@@ -163,12 +195,7 @@ const UserProfile = ({ name }) => {
             </span>
           </div>
           <div className="flex justify-center">
-            <button 
-              onClick={()=>handleFollow(userInfo?.data?.username)}
-              className=" bg-black text-white rounded-full h-10 w-80 hover:bg-black/80"
-            >
-              Follow
-            </button>
+            <HandleFollow userinfo={userInfo} handleFollow={handleFollow} />
           </div>
         </div>
       )}

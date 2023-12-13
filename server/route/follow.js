@@ -25,7 +25,7 @@ router.post("/", authUser, async (req, res) => {
       await newFollowing.save();
       return res.status(200).send("Follow success");
     }
-    follow.following.push(follower_id);
+    follow.following.push(following_id);
     await follow.save();
     return res.status(200).send("Follow success");
   } catch (error) {
@@ -38,12 +38,16 @@ router.get("/follower/:id", async (req, res) => {
   try {
     await Connected();
     const findFollow = await Follow.findOne({ user: id });
-    const followUser = await User.findById(findFollow.following);
-    const data = {
-      username: followUser.username,
-      email: followUser.email,
-      profileimg: followUser.profileimg,
-    };
+    const data = [];
+    for (let i = 0; i < findFollow.following.length; i++) {
+      const followUser = await User.findById(findFollow.following[i]);
+      const items = {
+        username: followUser.username,
+        email: followUser.email,
+        profileimg: followUser.profileimg,
+      };
+      data.push(items);
+    }
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);

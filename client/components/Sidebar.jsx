@@ -27,6 +27,9 @@ const CheckUserLogin = ({ user, address, func }) => {
           <li>
             <Link href={`/profile/${user?.username}`}>Profile</Link>
           </li>
+          <li>
+            <Link href={`/follow/${user?.userId}`}>Follow</Link>
+          </li>
         </div>
         <div>
           <li>

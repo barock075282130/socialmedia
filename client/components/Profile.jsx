@@ -21,10 +21,7 @@ const Profile = ({ username }) => {
   const [open, setOpen] = useState(false);
   return (
     <div>
-      <OtherUser
-        currentUser={user?.username}
-        params={username}
-      />
+      <OtherUser currentUser={user?.username} params={username} />
       {user?.username === username && (
         <>
           <div className="relative">
@@ -38,7 +35,7 @@ const Profile = ({ username }) => {
               <BackgroundImage />
             </div>
             <div className="absolute top-20 left-5">
-              <ProfileImage user={user} router={router}/>
+              <ProfileImage user={user} router={router} />
             </div>
             <EditProfile setOpen={setOpen} open={open} />
           </div>
