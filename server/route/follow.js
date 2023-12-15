@@ -13,23 +13,50 @@ router.post("/", authUser, async (req, res) => {
     }
     await Connected();
 
-    const user = await User.findOne({ username });
-    const following_id = user._id;
     const follower_id = auth.userId;
-    const follow = await Follow.findOne({ user: follower_id });
-    if (!follow) {
-      const newFollowing = new Follow({
-        user: follower_id,
-        following: following_id,
-      });
-      await newFollowing.save();
-      return res.status(200).send("Follow success");
-    }
-    follow.following.push(following_id);
-    await follow.save();
+
+    const user = await User.findOne({ username });
+    const crrUser = await User.findById(follower_id);
+
+    user.follower.push(crrUser._id);
+    crrUser.following.push(user._id);
+
+    await user.save();
+    await crrUser.save();
+
     return res.status(200).send("Follow success");
   } catch (error) {
     console.log(error);
+  }
+});
+
+router.delete("/unfollow", authUser, async (req, res) => {
+  const { username } = await req.body;
+  const auth = req.user;
+  try {
+    if (!auth) {
+      return res.status(401).send("No Permission");
+    }
+    await Connected();
+
+    const user = await User.findOne({ username });
+
+    const currUserId = auth.userId;
+    const followUserId = user._id;
+    const following = await User.updateOne(
+      { _id: currUserId },
+      { $pull: { following: followUserId } }
+    );
+    const follower = await User.updateOne(
+      { _id: followUserId },
+      { $pull: { follower: currUserId } }
+    );
+    if (!following || !follower) {
+      return res.status(300).send("Unfollow failed");
+    }
+    return res.status(200).send("Unfollow success");
+  } catch (error) {
+    return res.status(500).send("Error");
   }
 });
 
@@ -37,18 +64,37 @@ router.get("/follower/:id", async (req, res) => {
   const { id } = req.params;
   try {
     await Connected();
-    const findFollow = await Follow.findOne({ user: id });
-    const data = [];
-    for (let i = 0; i < findFollow.following.length; i++) {
-      const followUser = await User.findById(findFollow.following[i]);
-      const items = {
-        username: followUser.username,
-        email: followUser.email,
-        profileimg: followUser.profileimg,
-      };
-      data.push(items);
+    const findFollow = await User.findById(id);
+    if (!findFollow) {
+      return res.status(404).json("No Follower");
     }
-    return res.status(200).json(data);
+    const follower = findFollow.follower;
+    const following = findFollow.following;
+
+    const allData = {};
+
+    for (const id of [...follower, ...following]) {
+      const data = await User.findById(id);
+      if (following.includes(id)) {
+        allData.following = allData.following || [];
+        const setData = {
+          username: data.username,
+          email: data.email,
+          profileimg: data.profileimg,
+        };
+        allData.following.push(setData);
+      } else {
+        allData.followers = allData.followers || [];
+        const setData = {
+          username: data.username,
+          email: data.email,
+          profileimg: data.profileimg,
+        };
+        allData.followers.push(setData);
+      }
+    }
+
+    return res.status(200).json(allData);
   } catch (error) {
     console.log(error);
   }

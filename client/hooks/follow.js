@@ -1,7 +1,7 @@
 const { useEffect, useState } = require("react");
 
 function useFollow(id) {
-  const [follow, setFollow] = useState([]);
+  const [follow, setFollow] = useState(undefined);
   useEffect(() => {
     const getFollow = async () => {
       try {
@@ -11,9 +11,6 @@ function useFollow(id) {
             revalidate: 0,
           },
         });
-        if (!res.ok) {
-          throw new Error("Failed to fetch data");
-        }
         const data = await res.json();
         setFollow(data);
       } catch (error) {

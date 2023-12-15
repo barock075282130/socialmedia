@@ -1,10 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
-import useFollow from "@hooks/follow";
-import { userData } from "./context/userContext";
+import HandleFollow from "./HandleFollow";
 
 const OpenImg = ({ img, open, setOpen }) => {
   if (open) {
@@ -90,38 +89,13 @@ const ProfileImage = ({ user }) => {
   );
 };
 
-const HandleFollow = ({ userinfo, handleFollow, handleUnFollow }) => {
-  const { user } = useContext(userData);
-  const { follow } = useFollow(user?.userId);
-  for (let i = 0; i < follow.length; i++) {
-    const has = follow.some((fol) => fol.username === userinfo.data.username);
-    if (has) {
-      return (
-        <button
-          onClick={() => handleUnFollow(userinfo?.data?.username)}
-          className=" bg-black text-white rounded-full h-10 w-80 hover:bg-black/80"
-        >
-          Unfollow
-        </button>
-      );
-    } else {
-      return (
-        <button
-          onClick={() => handleFollow(userinfo?.data?.username)}
-          className=" bg-black text-white rounded-full h-10 w-80 hover:bg-black/80"
-        >
-          Follow
-        </button>
-      );
-    }
-  }
-};
-
 const UserProfile = ({ name }) => {
   const router = useRouter();
   const [userInfo, setUserInfo] = useState(null);
+  const [ loading, setLoading ] = useState(false)
   const serverUrl = "http://localhost:4000";
   const handleFollow = async (data) => {
+    setLoading(true)
     try {
       const res = await fetch("http://localhost:4000/follow", {
         method: "POST",
@@ -133,12 +107,36 @@ const UserProfile = ({ name }) => {
           username: data,
         }),
       });
+      if(res.ok){
+        window.location.reload(false)
+      }
     } catch (error) {
       throw error;
+    } finally {
+      setLoading(false)
     }
   };
   const handleUnFollow = async(data) => {
-    //** delete follow data in database function **
+    setLoading(true)
+    try {
+      const res = await fetch("http://localhost:4000/follow/unfollow", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "x-access-token": "Bearer " + localStorage.getItem("x-access-token"),
+        },
+        body: JSON.stringify({
+          username: data,
+        }),
+      });
+      if(res.ok){
+        window.location.reload(false)
+      }
+    } catch (error) {
+      throw error;
+    } finally {
+      setLoading(false)
+    }
   }
   useEffect(() => {
     const fetchUser = async () => {
@@ -195,7 +193,7 @@ const UserProfile = ({ name }) => {
             </span>
           </div>
           <div className="flex justify-center">
-            <HandleFollow userinfo={userInfo} handleFollow={handleFollow} />
+            <HandleFollow userinfo={userInfo} handleFollow={handleFollow} handleUnFollow={handleUnFollow} />
           </div>
         </div>
       )}

@@ -7,11 +7,9 @@ const getFollow = async (id) => {
       method: "GET",
       next: {
         revalidate: 0
-      }
+      },
+      cache: 'no-store'
     });
-    if(!res.ok){
-      throw new Error('Failed to fetch data')
-    }
     return res.json();
   } catch (error) {
     throw error;

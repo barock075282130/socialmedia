@@ -27,9 +27,20 @@ const ShowPost = ({ path, post, setPost, updatePost, setUpdatePost }) => {
 };
 
 const ShowImage = ({ data }) => {
-  if (!data) {
+  const img = "/profile.png";
+  if (!data.profile) {
     return (
-      <div className="w-10 h-10 bg-white rounded-full border cursor-pointer" />
+      <div className="w-10 h-10 bg-white rounded-full border cursor-pointer">
+        <Image
+          src={img}
+          alt="non-profile"
+          width={100}
+          height={100}
+          style={{
+            borderRadius: "100%",
+          }}
+        />
+      </div>
     );
   }
   return (
@@ -56,7 +67,12 @@ const PostImage = ({ data }) => {
       <div className="grid grid-cols-2 place-items-center gap-3">
         {data.map((img, i) => (
           <div key={i}>
-            <Image src={img.link} alt={`photo_${img.alt}`} width={200} height={200} />
+            <Image
+              src={img.link}
+              alt={`photo_${img.alt}`}
+              width={200}
+              height={200}
+            />
           </div>
         ))}
       </div>

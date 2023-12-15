@@ -31,6 +31,7 @@ const Context = ({ children }) => {
             "x-access-token":
               "Bearer " + localStorage.getItem("x-access-token"),
           },
+          cache: 'no-store'
         });
         if (res.ok) {
           const json = await res.json();

@@ -8,7 +8,12 @@ const Follow = ({ data }) => {
   const img = "/profile.png";
   const router = useRouter();
   const loopData = () => {
-    return data.map((item) => (
+    if(!data){
+      return <div className="flex justify-center">
+        <h1>No Follower</h1>
+      </div>
+    }
+    return data.following.map((item) => (
       <div
         key={item.username}
         className="flex gap-2 my-2 mx-4 cursor-pointer"
