@@ -78,13 +78,19 @@ const UploadProfileImage = ({
               </svg>
             </button>
             <div className="flex items-center justify-center h-full">
+              <div className="grid">
               {previewImg && (
                 <div>
                   <Image
                     src={previewImg}
                     alt="preview"
-                    width={500}
-                    height={500}
+                    width={0}
+                    height={0}
+                    sizes="100vw"
+                    style={{
+                      height: "520px",
+                      width: "auto"
+                    }}
                   />
                 </div>
               )}
@@ -99,6 +105,7 @@ const UploadProfileImage = ({
                 </button>
               </form>
             </div>
+              </div>
           </div>
         </>
       )}

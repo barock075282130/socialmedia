@@ -104,7 +104,7 @@ const Post = ({ post, setPost, updatePost, setUpdatePost, type }) => {
       });
       if (res.ok) {
         setUpdatePost("");
-        setPreview([])
+        setPreview([]);
         const data = await res.json();
         const newLine = data.posttext
           .split("\n")
@@ -118,6 +118,10 @@ const Post = ({ post, setPost, updatePost, setUpdatePost, type }) => {
       setLoading(false);
     }
   };
+  const handleRemoveImage = () => {
+    setImages([]);
+    setPreview([]);
+  };
   return (
     <>
       {openPre && <PreviewPostImg setOpenPre={setOpenPre} img={preview} />}
@@ -128,6 +132,26 @@ const Post = ({ post, setPost, updatePost, setUpdatePost, type }) => {
               <div className="absolute right-0 bottom-2 p-1 flex items-center">
                 {preview.length > 0 && (
                   <div className="relative w-[100px] h-[100px] flex justify-center items-center">
+                    {preview && (
+                      <div className="fixed top-2 bg-red-600 text-white px-[13px]">
+                        <button
+                          onClick={() => handleRemoveImage()}
+                          className="flex items-center gap-3"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            height="16"
+                            width="14"
+                            viewBox="0 0 448 512"
+                            className="fill-white"
+                          >
+                            <path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z" />
+                          </svg>
+                          Delete
+                        </button>
+                      </div>
+                    )}
+
                     <div
                       className="w-full h-full bg-black/50 hover:bg-black/80 duration-300 cursor-pointer rounded-md absolute"
                       onClick={() => setOpenPre(true)}
@@ -138,8 +162,13 @@ const Post = ({ post, setPost, updatePost, setUpdatePost, type }) => {
                     <Image
                       src={preview[0]}
                       alt={`preview_${preview[0]}`}
-                      width={100}
-                      height={100}
+                      width={0}
+                      height={0}
+                      sizes="30vh"
+                      style={{
+                        width: "auto",
+                        height: "100px",
+                      }}
                     />
                   </div>
                 )}
@@ -147,11 +176,12 @@ const Post = ({ post, setPost, updatePost, setUpdatePost, type }) => {
               <textarea
                 name="postText"
                 cols="30"
-                rows="5"
-                className="resize-none w-full p-3 border rounded-md"
+                rows="4"
+                className="resize-none w-full p-3 text-xl border rounded-md"
                 value={updatePost}
                 onChange={handlePostData}
                 required
+                placeholder="Post It Here?!"
               ></textarea>
             </div>
             <div className="flex justify-between items-center">
@@ -172,7 +202,7 @@ const Post = ({ post, setPost, updatePost, setUpdatePost, type }) => {
                     onChange={handlePreview}
                     multiple
                   />
-                </label>  
+                </label>
               </div>
               <div className="flex gap-2">
                 <button className="blue_btn cursor-pointer">

@@ -94,7 +94,7 @@ const EditProfile = ({ open, setOpen }) => {
                   <div className="flex justify-between">
                     <button className="blue_btn">Edit</button>
                     <button className="gray_btn" onClick={()=>setOpen(false)}>
-                      Cancle
+                      Cancel
                     </button>
                   </div>
                 </div>

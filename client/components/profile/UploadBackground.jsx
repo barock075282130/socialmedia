@@ -6,15 +6,15 @@ import { useState } from "react";
 
 const UploadBackground = ({ imgOpen, setImgOpen, user }) => {
   const [preview, setPreview] = useState(null);
-  const [ background, setBackground ] = useState(null);
-  const [ upload , setUpload ]= useState(false)
-  const router = useRouter()
+  const [background, setBackground] = useState(null);
+  const [upload, setUpload] = useState(false);
+  const router = useRouter();
   const preImage = (e) => {
     const file = e.target.files[0];
     const blob = new Blob([file]);
     const url = URL.createObjectURL(blob);
     setPreview(url);
-    setBackground(file)
+    setBackground(file);
   };
   const handleCloseUpload = () => {
     setImgOpen(false);
@@ -54,7 +54,10 @@ const UploadBackground = ({ imgOpen, setImgOpen, user }) => {
   return (
     <>
       {!imgOpen && (
-        <p className="cursor-pointer hover:text-gray-400 duration-200" onClick={() => setImgOpen(true)}>
+        <p
+          className="cursor-pointer hover:text-gray-400 duration-200"
+          onClick={() => setImgOpen(true)}
+        >
           Update background photo
         </p>
       )}
@@ -80,14 +83,21 @@ const UploadBackground = ({ imgOpen, setImgOpen, user }) => {
                   <Image
                     src={preview}
                     alt="img_preview"
-                    width={500}
-                    height={500}
+                    width={0}
+                    height={0}
+                    sizes="100vw"
+                    style={{
+                      height: "520px",
+                      width: "auto"
+                    }}
                   />
                 )}
               </div>
               <form onSubmit={handleUpdateBg}>
                 <input type="file" filename="background" onChange={preImage} />
-                <button>{upload ? 'Uploading...': 'Upload'}</button>
+                <button className="bg-black ml-2 text-white py-2.5 hover:bg-black/30 duration-200 px-4 rounded-lg">
+                  {upload ? "Uploading..." : "Upload"}
+                </button>
               </form>
             </div>
           </div>

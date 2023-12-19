@@ -3,11 +3,11 @@
 @tailwind utilities;
 
 .blue_btn{ 
-    @apply bg-blue-200 duration-200 text-blue-600 px-4 py-1 hover:bg-blue-600 hover:text-white rounded-lg font-bold
+    @apply bg-black duration-300 text-white px-4 py-1 hover:ring-2 hover:ring-black hover:bg-white hover:text-black font-bold
 }
 
 .gray_btn{ 
-    @apply bg-gray-200 duration-200 text-gray-600 px-4 py-1 hover:bg-gray-600 hover:text-white rounded-lg font-bold
+    @apply bg-gray-600 duration-200 text-gray-200 px-4 py-1 hover:bg-gray-200 hover:text-gray-700 hover:ring-gray-600 hover:ring-2 font-bold
 }
 
 input{
@@ -17,3 +17,4 @@ input{
 input[filename="image"] {
     display: none;
 }
+
